@@ -1,1 +1,1 @@
-# e-school
+# E-School
