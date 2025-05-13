@@ -30,60 +30,7 @@ class WebController extends Controller
 {
     public function index()
     {
-        $eprograms = null;
-        $images = null;
-        $videos= null;
-        $news = null;
-        $faqs = null;
-
-
-        $date = Carbon::now();
-        $settings = getSettings();
-        $sliders = Slider::whereIn('type', [2, 3])->get();
-        $about = WebSetting::where('name','about_us')->where('status',1)->first();
-        $event = WebSetting::where('name', 'events')->where('status',1)->first();
-        $program = WebSetting::where('name', 'programs')->where('status',1)->first();
-        $photo = WebSetting::where('name','photos')->where('status',1)->first();
-        $video = WebSetting::where('name','videos')->where('status',1)->first();
-        $faq = WebSetting::where('name','faqs')->where('status',1)->first();
-        $app = WebSetting::where('name','app')->where('status',1)->first();
-        if($program)
-        {
-            $eprograms = EducationalProgram::get();
-        }
-
-        if($event)
-        {
-            $events = Event::with('multipleEvent')->where(function ($query) use ($date) {
-                $query->where('start_date', '>=', $date)->orWhere('end_date','>=', $date)
-                      ->orWhereDate('start_date', '=', $date)->orWhere('end_date','=', $date);
-            })->get();
-
-            $holiday = Holiday::where('date','>=', $date)->get();
-
-            $collections = $events->merge($holiday);
-            $sortedCollection = $collections->sortby('date')->sortby('start_date');
-            $news = $sortedCollection->take(6);
-
-        }
-
-        if($photo)
-        {
-            $images = Media::where('type',1)->get();
-        }
-
-        if($video)
-        {
-            $videos = Media::where('type',2)->get();
-        }
-
-        if($faq)
-        {
-            $faqs = Faq::where('status',1)->get();
-        }
-
-
-        return view('web.index',compact('settings','sliders', 'about' ,'event','program','photo','video','faq','app','eprograms','news','images','videos','faqs'));
+        return view('web.index');
     }
 
     public function about()

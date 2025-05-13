@@ -64,7 +64,7 @@ use App\Http\Controllers\OnlineExamQuestionController;
 */
 Auth::routes();
 Route::get('/', [WebController::class,'index']);
-Route::get('about',[WebController::class,'about'])->name('about.us');
+/*Route::get('about',[WebController::class,'about'])->name('about.us');
 Route::get('contact',[WebController::class, 'contact_us'])->name('contact.us');
 Route::get('photo',[WebController::class, 'photo'])->name('photo');
 Route::get('photo-gallery/{id}',[WebController::class, 'photo_details'])->name('photo.gallery');
@@ -74,7 +74,7 @@ Route::post('contact-us/store',[WebController::class,'contact_us_store'])->name(
 Route::get('registration',[WebController::class,'registrationIndex'])->name('student-registration.index');
 Route::post('student-register', [WebController::class, 'studentRegistration'])->name('student-registration-store');
 
-Route::get('error-page',[WebController::class, 'errorPage'])->name('error-page');
+Route::get('error-page',[WebController::class, 'errorPage'])->name('error-page');*/
 Route::get('/login', function () {
         return view('auth.login');
     })->name('login');

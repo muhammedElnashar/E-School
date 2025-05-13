@@ -1,16 +1,6 @@
 <!DOCTYPE html>
-@php
-    $lang = Session::get('language');
-@endphp
-@if($lang)
-    @if ($lang->is_rtl)
-        <html lang="en" dir="rtl">
-    @else
-        <html lang="en">
-    @endif
-@else
+
     <html lang="en">
-@endif
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">

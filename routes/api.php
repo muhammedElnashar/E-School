@@ -47,7 +47,7 @@ Route::group(['prefix' => 'student'], function () {
 
     //Authenticated APIs
     Route::group(['middleware' => 'auth:sanctum','isStudent'],function (){
-        Route::post('logout', [ApiController::class, 'logout']);
+        Route::post('logout', [AuthController::class, 'logout']);
         Route::post('email/verify', [EmailVerify::class, 'Verify']);
         Route::post('resend/email/verify', [EmailVerify::class, 'resendVerificationOtp']);
         // User
@@ -125,7 +125,7 @@ Route::group(['prefix' => 'student'], function () {
 /**
  * TEACHER APIs
  **/
-Route::group(['prefix' => 'teacher'], function () {
+/*Route::group(['prefix' => 'teacher'], function () {
     //Non Authenticated APIs
     Route::post('login', [TeacherApiController::class, 'login']);
     //Authenticated APIs
@@ -209,7 +209,7 @@ Route::group(['prefix' => 'teacher'], function () {
 
         Route::post('update-timetable-link', [TeacherApiController::class, 'updateTimetableLink']);
     });
-});
+});*/
 
 /**
  * GENERAL APIs

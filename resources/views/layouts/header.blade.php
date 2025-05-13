@@ -11,6 +11,7 @@
             <span class="fa fa-bars"></span>
         </button>
 
+{{--
         @php
         $email_config_verify_value = DB::table('settings')->select('message')->where('type','email_configration_verification')->first();
         if($email_config_verify_value){
@@ -19,23 +20,21 @@
         $message = 0;
         }
         @endphp
-        @if($message == 0)
-        @can('email-setting-create')
-        <div class="mx-auto order-0">
-            <div class="alert alert-fill-danger my-2" role="alert">
-                <i class="fa fa-exclamation"></i> Email Configration is not verified <a href="{{route('setting.email-config-index')}}" class="alert-link">Click here to redirect to email configration</a>.
-            </div>
-        </div>
-        @endcan
-        @endif
-        @php
-             $current_version = getSettings('system_version');
-             $current_version = $current_version['system_version'];
-        @endphp
+--}}
+{{--        @if($message == 0)--}}
+{{--        @can('email-setting-create')--}}
+{{--        <div class="mx-auto order-0">--}}
+{{--            <div class="alert alert-fill-danger my-2" role="alert">--}}
+{{--                <i class="fa fa-exclamation"></i> Email Configration is not verified <a href="{{route('setting.email-config-index')}}" class="alert-link">Click here to redirect to email configration</a>.--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--        @endcan--}}
+{{--        @endif--}}
+
         <ul class="navbar-nav navbar-nav-left">
             <li class="nav-item">
                 <a class="nav-link" href="#" aria-expanded="false">
-                    <span class="badge badge-success">{{$current_version}} v</span>
+                    <span class="badge badge-success">v</span>
                 </a>
             </li>
         </ul>
@@ -48,27 +47,29 @@
                     <i class="fa fa-language"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="messageDropdown">
-                    @foreach (get_language() as $key => $language)
-                    <a class="dropdown-item preview-item" href="{{url('set-language').'/'.$language->code}}">
-                        <div class="preview-thumbnail">
-                            {{-- <img src="../../../assets/images/faces/face3.jpg" alt="image" class="profile-pic"> --}}
-                        </div>
-                        <div class="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                            <h6 class="preview-subject ellipsis mb-1 font-weight-normal">{{$language->name}}</h6>
-                            {{-- <p class="text-gray mb-0"> 18 Minutes ago </p> --}}
-                        </div>
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    @endforeach
+{{--                    @foreach (get_language() as $key => $language)--}}
+{{--                    <a class="dropdown-item preview-item" href="{{url('set-language').'/'.$language->code}}">--}}
+{{--                        <div class="preview-thumbnail">--}}
+{{--                            --}}{{-- <img src="../../../assets/images/faces/face3.jpg" alt="image" class="profile-pic"> --}}
+{{--                        </div>--}}
+{{--                        <div class="preview-item-content d-flex align-items-start flex-column justify-content-center">--}}
+{{--                            <h6 class="preview-subject ellipsis mb-1 font-weight-normal">{{$language->name}}</h6>--}}
+{{--                            --}}{{-- <p class="text-gray mb-0"> 18 Minutes ago </p> --}}
+{{--                        </div>--}}
+{{--                    </a>--}}
+{{--                    <div class="dropdown-divider"></div>--}}
+{{--                    @endforeach--}}
                 </div>
             </li>
             <li class="nav-item nav-profile dropdown">
                 <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" data-toggle="dropdown" aria-expanded="true">
                     <div class="nav-profile-img">
+{{--
                         <img src="{{ Auth::user()->image }}" alt="image" onerror="onErrorImage(event)">
+--}}
                     </div>
                     <div class="nav-profile-text">
-                        <p class="mb-1 text-black">{{ Auth::user()->first_name }}</p>
+{{--                        <p class="mb-1 text-black">{{ Auth::user()->first_name }}</p>--}}
                     </div>
                 </a>
                 <div class="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
