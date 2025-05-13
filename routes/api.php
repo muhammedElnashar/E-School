@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\ParentApiController;
 use App\Http\Controllers\Api\ResetPassword;
 use App\Http\Controllers\Api\StudentApiController;
 use App\Http\Controllers\Api\TeacherApiController;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
@@ -30,18 +31,28 @@ use Illuminate\Support\Facades\Route;
  * STUDENT APIs
  **/
 Route::group(['prefix' => 'student'], function () {
-//Auth
-    Route::post('register', [AuthController::class, 'register']);
-    Route::post('login', [AuthController::class, 'login']);
-//Reset Password
-    Route::post('send/otp/reset/password', [ResetPassword::class, 'sendResetPasswordOtp']);
-    Route::post('verify/otp/reset/password', [ResetPassword::class, 'verifyResetPasswordOtp']);
-    Route::post('reset/password', [ResetPassword::class, 'resetPassword']);
+
+    // Auth
+    Route::middleware('guest')->group(function (){
+        Route::post('/register', [AuthController::class, 'register']);
+        Route::post('/login', [AuthController::class, 'login']);
+        Route::post('/auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
+        //Reset Password
+
+        Route::post('send/otp/reset/password', [ResetPassword::class, 'sendResetPasswordOtp']);
+        Route::post('verify/otp/reset/password', [ResetPassword::class, 'verifyResetPasswordOtp']);
+        Route::post('reset/password', [ResetPassword::class, 'resetPassword']);
+    });
+
+
     //Authenticated APIs
-    Route::group(['middleware' => 'auth:sanctum'],function (){
+    Route::group(['middleware' => 'auth:sanctum','isStudent'],function (){
         Route::post('logout', [ApiController::class, 'logout']);
         Route::post('email/verify', [EmailVerify::class, 'Verify']);
         Route::post('resend/email/verify', [EmailVerify::class, 'resendVerificationOtp']);
+        // User
+        Route::patch('update/user/profile', [UserController::class, 'updateUserProfile']);
+        Route::delete('delete/user/profile', [UserController::class, 'deleteUserProfile']);
     });
 
 

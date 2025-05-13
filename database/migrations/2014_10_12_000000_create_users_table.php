@@ -16,10 +16,14 @@ return new class extends Migration {
             $table->string('user_code')->unique();
             $table->string('name');
             $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+
             $table->string('password');
             $table->string('image')->nullable();
             $table->enum('role', ['student', 'teacher', 'admin']);
-            $table->string('iban')->nullable(); // للمعلمين فقط
+            $table->string('iban')->nullable();
+            $table->string('social_id')->nullable();
+            $table->string('social_type')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
