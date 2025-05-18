@@ -53,6 +53,8 @@ Route::group(['prefix' => 'student'], function () {
 
         Route::get('/packages', [MarketplaceItemController::class, 'getPackages']);
         Route::get('/digital-assets', [MarketplaceItemController::class, 'getDigitalAssets']);
+        Route::get('/subjects', [MarketplaceItemController::class, 'getAllSubject']);
+
     });
 
 

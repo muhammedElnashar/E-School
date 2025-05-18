@@ -4,12 +4,12 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PackageResource extends JsonResource
+class AssetsResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
     public function toArray($request)
@@ -18,10 +18,8 @@ class PackageResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'price' => $this->price,
             'type' => $this->type,
-            'package_scope' => $this->package_scope,
-            'lecture_credits' => $this->lecture_credits,
+            'price' => $this->price,
             'education_stage_subject' => [
                 'subject' => [
                     'id' => $this->educationStageSubject->subject->id,
@@ -33,7 +31,6 @@ class PackageResource extends JsonResource
                 ],
 
             ],
-
         ];
     }
 }

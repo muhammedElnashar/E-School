@@ -1,4 +1,5 @@
 <?php
+
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DigitalAssetController;
 use App\Http\Controllers\Admin\EducationStageController;
@@ -21,7 +22,7 @@ use App\Http\Controllers\SettingController;
 */
 Auth::routes();
 
-    Route::get('/subjects/stages-management', [SubjectController::class, 'stagesManagement'])->name('subjects.stages.management');
+Route::get('/subjects/stages-management', [SubjectController::class, 'stagesManagement'])->name('subjects.stages.management');
 Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/subjects/{subject}/stages', [SubjectController::class, 'getStages']);
     Route::post('/subjects/{subject}/stages/sync', [SubjectController::class, 'syncStages']);
@@ -29,8 +30,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::resource('education/stages', EducationStageController::class);
     Route::resource('marketplace-items/package', PackageController::class);
     Route::resource('marketplace-items/digital-assets', DigitalAssetController::class);
-
-    Route::get('/', [DashboardController::class,'index']);
+    Route::get('/', [DashboardController::class, 'index']);
 
 
 });
@@ -44,28 +44,6 @@ Route::get('set-language/{locale}', function ($locale) {
 
     return redirect()->back();
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /*Route::get('/login', function () {
@@ -433,7 +411,7 @@ Route::get('set-language/{locale}', function ($locale) {
     });
 });*/
 
-Route::get('delete-chat-message/cron-job',[SettingController::class,'cron_job']);
+Route::get('delete-chat-message/cron-job', [SettingController::class, 'cron_job']);
 
 
 Route::get('clear', function () {
