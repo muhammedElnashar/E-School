@@ -12,8 +12,11 @@ class DatabaseSeeder extends Seeder
      *
      * @return void
      */
-    public function run(){
+    public function run()
+    {
+
         $this->call(AddSuperAdminSeeder::class);
+        $this->call(MarketplaceSeeder::class);
 //        $this->call(DummyDataSeeder::class);
 //        $this->call(InstallationSeeder::class);
 

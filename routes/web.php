@@ -1,56 +1,13 @@
 <?php
-
-use App\Models\Grade;
-use App\Models\ExamTimetable;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\DigitalAssetController;
+use App\Http\Controllers\Admin\EducationStageController;
+use App\Http\Controllers\Admin\PackageController;
+use App\Http\Controllers\Admin\SubjectController;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\WebController;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Storage;
-use App\Http\Controllers\ExamController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\EventController;
-use App\Http\Controllers\LeaveController;
-use App\Http\Controllers\MediaController;
-use App\Http\Controllers\ShiftController;
-use App\Http\Controllers\StaffController;
-use App\Http\Controllers\LessonController;
-use App\Http\Controllers\MediumController;
-use App\Http\Controllers\SliderController;
-use App\Http\Controllers\StreamController;
-use App\Http\Controllers\HolidayController;
-use App\Http\Controllers\ParentsController;
-use App\Http\Controllers\SectionController;
 use App\Http\Controllers\SettingController;
-use App\Http\Controllers\StudentController;
-use App\Http\Controllers\SubjectController;
-use App\Http\Controllers\TeacherController;
-use App\Http\Controllers\WebhookController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\FeesTypeController;
-use App\Http\Controllers\LanguageController;
-use App\Http\Controllers\SemesterController;
-use App\Http\Controllers\FormFieldController;
-use App\Http\Controllers\TimetableController;
-use App\Http\Controllers\AssignmentController;
-use App\Http\Controllers\AttendanceController;
-use App\Http\Controllers\OnlineExamController;
-use App\Http\Controllers\WebSettingController;
-use App\Http\Controllers\ClassSchoolController;
-use App\Http\Controllers\LeaveMasterController;
-use App\Http\Controllers\LessonTopicController;
-use App\Http\Controllers\SessionYearController;
-use App\Http\Controllers\AnnouncementController;
-use App\Http\Controllers\ClassTeacherController;
-use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\SystemUpdateController;
-use App\Http\Controllers\ExamTimetableController;
-use App\Http\Controllers\StudentSessionController;
-use App\Http\Controllers\SubjectTeacherController;
-use App\Http\Controllers\OnlineExamQuestionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,24 +20,59 @@ use App\Http\Controllers\OnlineExamQuestionController;
 |
 */
 Auth::routes();
-Route::get('/', [WebController::class,'index']);
-/*Route::get('about',[WebController::class,'about'])->name('about.us');
-Route::get('contact',[WebController::class, 'contact_us'])->name('contact.us');
-Route::get('photo',[WebController::class, 'photo'])->name('photo');
-Route::get('photo-gallery/{id}',[WebController::class, 'photo_details'])->name('photo.gallery');
-Route::get('video',[WebController::class, 'video'])->name('video');
-Route::get('video-gallery',[WebController::class, 'video_details'])->name('video.gallery');
-Route::post('contact-us/store',[WebController::class,'contact_us_store'])->name('contact_us.store');
-Route::get('registration',[WebController::class,'registrationIndex'])->name('student-registration.index');
-Route::post('student-register', [WebController::class, 'studentRegistration'])->name('student-registration-store');
 
-Route::get('error-page',[WebController::class, 'errorPage'])->name('error-page');*/
-Route::get('/login', function () {
+    Route::get('/subjects/stages-management', [SubjectController::class, 'stagesManagement'])->name('subjects.stages.management');
+Route::prefix('admin')->middleware('auth')->group(function () {
+    Route::get('/subjects/{subject}/stages', [SubjectController::class, 'getStages']);
+    Route::post('/subjects/{subject}/stages/sync', [SubjectController::class, 'syncStages']);
+    Route::resource('subjects', SubjectController::class);
+    Route::resource('education/stages', EducationStageController::class);
+    Route::resource('marketplace-items/package', PackageController::class);
+    Route::resource('marketplace-items/digital-assets', DigitalAssetController::class);
+
+    Route::get('/', [DashboardController::class,'index']);
+
+
+});
+
+Route::get('set-language/{locale}', function ($locale) {
+    $availableLocales = ['en', 'ar']; // اللغات المتوفرة
+
+    if (in_array($locale, $availableLocales)) {
+        Session::put('locale', $locale);
+    }
+
+    return redirect()->back();
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*Route::get('/login', function () {
         return view('auth.login');
-    })->name('login');
-// Route::get('/login', [WebController::class, 'auth.login'])->name('login');
+    })->name('login');*/
 
-Route::group(['middleware' => ['Role', 'auth']], function () {
+/*Route::group(['middleware' => ['Role', 'auth']], function () {
     Route::group(['middleware' => 'language'], function () {
         // Route::get('/home', [HomeController::class, 'index']);
         Route::get('home', [HomeController::class, 'index'])->name('home');
@@ -439,27 +431,10 @@ Route::group(['middleware' => ['Role', 'auth']], function () {
         Route::get('staff-leave-list',[LeaveController::class, 'staffLeaveList'])->name('staff-leave.show');
 
     });
-});
+});*/
 
 Route::get('delete-chat-message/cron-job',[SettingController::class,'cron_job']);
 
-// webhooks
-Route::post('webhook/razorpay', [WebhookController::class, 'razorpay']);
-Route::post('webhook/stripe', [WebhookController::class, 'stripe']);
-Route::post('webhook/paystack',[WebhookController::class,'paystack']);
-Route::post('webhook/flutterwave',[WebhookController::class, 'flutterwave']);
-Route::get('response/paystack/success', [WebhookController::class,'paystackSuccessCallback'])->name('paystack.success');
-Route::get('response/flutterwave/success', [WebhookController::class,'flutterwaveSuccessCallback'])->name('flutterwave.success');
-
-Route::get('/privacy-policy', function () {
-    $settings = getSettings('privacy_policy');
-    echo $settings['privacy_policy'];
-});
-
-Route::get('/terms-conditions', function(){
-    $settings = getSettings('terms_condition');
-    echo $settings['terms_condition'];
-});
 
 Route::get('clear', function () {
     Artisan::call('view:clear');
@@ -469,68 +444,4 @@ Route::get('clear', function () {
     return redirect()->back();
 });
 
-Route::get('storage-link', function () {
-    try {
-        Artisan::call('storage:link');
-        echo "storage link created";
-    } catch (Exception $e) {
-        echo "Storage Link already exists";
-    }
-});
 
-
-Route::get('migrate', function () {
-    Artisan::call('view:clear');
-    Artisan::call('route:clear');
-    Artisan::call('config:clear');
-    Artisan::call('cache:clear');
-    Artisan::call('migrate');
-    echo "Migration Done";
-});
-// Route::get('rollback', function () {
-//     Artisan::call('view:clear');
-//     Artisan::call('route:clear');
-//     Artisan::call('config:clear');
-//     Artisan::call('cache:clear');
-//     Artisan::call('migrate:rollback');
-//     echo "Rollback Done";
-// });
-Route::get('seeder_install', function () {
-    Artisan::call('view:clear');
-    Artisan::call('route:clear');
-    Artisan::call('config:clear');
-    Artisan::call('cache:clear');
-    Artisan::call('db:seed --class=InstallationSeeder');
-    echo "Seeders Insatlled Successfully";
-});
-// Route::get('test', function () {
-//     //            return "working";
-//     \Artisan::call('db:seed --class=ProductTableSeeder');
-//     \Artisan::call('config:clear');
-//     \Artisan::call('view:clear');
-//     //            echo "Done";
-//     //    if (Storage::disk('public')->exists("http://127.0.0.1:8000/storage/lessons/lQNZSKVwsZS5XkC3Jjag4DS4s7ykymH07GzFFa3K.txt")) {
-//     //        echo "file exists";
-//     //        Storage::disk('public')->delete("http://127.0.0.1:8000/storage/lessons/lQNZSKVwsZS5XkC3Jjag4DS4s7ykymH07GzFFa3K.txt");
-//     //    }else{
-//     //        echo "file does not exists";
-//     //    }
-// });
-
-
-// Route::get('/storage-link', function(){
-//     $target = storage_path('app/public');
-//     $link = public_path('/storage');
-//     symlink($target, $link);
-//     echo "symbolic link created successfully";
-// });
-
-// Route::get('/command', function()
-// {
-//     $exitCode = Artisan::call('db:seed', ['--class' => 'DummyDataSeeder']);
-//     echo "Command executed successfully.";
-// });
-
-// Route::get('/', function () {
-//     return view('auth.login');
-// });

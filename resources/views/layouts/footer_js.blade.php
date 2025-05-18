@@ -101,6 +101,16 @@
     });
 </script>
 <script>
+    $(document).ready(function() {
+        $('.select2').select2({
+            width: '100%' ,
+            placeholder: '{{ __("select_stages") }}',
+
+        });
+    });
+</script>
+
+<script>
     const lang_no = "{{ __('no') }}"
     const lang_yes = "{{ __('yes') }}"
     const lang_cannot_delete_beacuse_data_is_associated_with_other_data = "{{ __('cannot_delete_beacuse_data_is_associated_with_other_data') }}"

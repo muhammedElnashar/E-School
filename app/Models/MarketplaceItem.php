@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\MarketplaceItemType;
+use App\Enums\Scopes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,15 +11,35 @@ class MarketplaceItem extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'type', 'price', 'lecture_credits', 'file_path'];
+    protected $fillable = [
+        'education_stage_subject_id',
+        'name',
+        'description',
+        'type',
+        'package_scope',
+        'price',
+        'lecture_credits',
+        'file_path',
+    ];
 
-    public function isPackage()
+    public function educationStageSubject()
     {
-        return $this->type === 'package';
+        return $this->belongsTo(EducationStageSubject::class);
+    }
+    protected $casts = [
+        'type' => MarketplaceItemType::class,
+        'package_scope' => Scopes::class,
+
+    ];
+    public function isPackage(): bool
+    {
+        return $this->type === MarketplaceItemType::Package;
     }
 
-    public function isDigitalAsset()
+    public function isDigitalAsset(): bool
     {
-        return $this->type === 'digital_asset';
+        return $this->type === MarketplaceItemType::DigitalAsset;
     }
+
+
 }

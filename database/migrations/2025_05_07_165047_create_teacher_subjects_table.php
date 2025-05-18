@@ -13,17 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('lessons', function (Blueprint $table) {
+        Schema::create('teacher_subjects', function (Blueprint $table) {
             $table->id();
             $table->foreignId('teacher_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('subject_id')->constrained()->onDelete('cascade');
-            $table->foreignId('education_stage_subject_id')->constrained()->onDelete('cascade');
-            $table->dateTime('start_datetime');
-            $table->dateTime('end_datetime');
-            $table->string('zoom_link')->nullable();
-            $table->integer('reschedules_count')->default(0);
-            $table->enum('lesson_type', ['individual', 'group','both']);
 
+            $table->timestamps();
         });
     }
 
@@ -34,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('lessons');
+        Schema::dropIfExists('teacher_subjects');
     }
 };

@@ -15,15 +15,14 @@ return new class extends Migration
     {
         Schema::create('marketplace_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sub_category_id')->nullable()->constrained('sub_categories')->onDelete('set null');
+            $table->foreignId('education_stage_subject_id')->constrained()->onDelete('cascade');
             $table->string('name');
             $table->text('description')->nullable();
-            $table->enum('type', ['package', 'digital_asset']);
-            $table->enum('package_scope', ['individual', 'group', 'both'])->nullable();
+            $table->string('type');
+            $table->string('package_scope')->nullable();
             $table->decimal('price', 8, 2);
             $table->integer('lecture_credits')->default(0); // فقط للباقات
-            $table->boolean('is_downloadable_content')->default(false);     // مضاف
-            $table->string('file_path')->nullable(); // فقط للملفات
+            $table->string('file_path')->nullable(); // مسار الملف إذا كان محتوى رقمي
             $table->timestamps();
         });
     }

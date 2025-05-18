@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use Throwable;
 use App\Models\Faq;
 use App\Models\User;
@@ -30,6 +31,9 @@ class WebController extends Controller
 {
     public function index()
     {
+        if (!Auth::check()) {
+            return redirect('/login');
+        }
         return view('web.index');
     }
 

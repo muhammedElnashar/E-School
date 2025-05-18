@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // ربط الطالب
             $table->foreignId('marketplace_item_id')->constrained()->onDelete('cascade'); // ربط بالباكدج
-            $table->foreignId('sub_category_id')->constrained('sub_categories')->onDelete('cascade'); // ربط بالقسم الفرعي
+            $table->foreignId('education_stage_subject_id')->constrained()->onDelete('cascade');
             $table->integer('remaining_credits')->default(0); // الحصص المتبق
             $table->timestamps();
         });

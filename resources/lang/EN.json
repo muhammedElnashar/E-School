@@ -610,7 +610,10 @@
     "automatically" : "Automatically",
     "manually" : "Manually",
     "leave_type" : "Leave Type",
-    "cache_clear" : "Cache Clear"
+    "cache_clear" : "Cache Clear",
+    "manage" : "Manage",
+    "class" : "Class",
+    "subject" : "Subject"
 
 
 }

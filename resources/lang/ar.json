@@ -1,0 +1,20 @@
+{
+    "education_stage": "المرحلة التعليمية",
+    "subject": "ماده",
+    "subjects": "المواد",
+    "Subjects": "المواد",
+    "manage": "إدارة",
+    "create": "إنشاء",
+    "list": "قائمة",
+    "name": "الاسم",
+    "action": "إجراء",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "submit": "حفظ",
+    "cancel": "إلغاء",
+    "no data": "لا توجد بيانات",
+    "delete_title": "هل أنت متأكد من الحذف؟",
+    "confirm_message": "لن تتمكن من التراجع عن هذا الإجراء!",
+    "yes_delete": "نعم، احذف",
+    "close": "إغلاق"
+}

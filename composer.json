@@ -47,7 +47,10 @@
         },
         "files": [
             "app/Helpers/settings_helper.php",
-            "app/Helpers/notification_helper.php"
+            "app/Helpers/notification_helper.php",
+            "app/Helpers/helpers.php",
+            "app/Helpers/ErrorHandler.php"
+
         ]
     },
     "autoload-dev": {
