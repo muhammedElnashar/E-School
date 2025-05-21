@@ -21,7 +21,8 @@
                             <th>#</th>
                             <th>{{ __('Name') }}</th>
                             <th>{{ __('Price') }}</th>
-                            <th>{{ __('Education Stage - Subject') }}</th>
+                            <th>{{ __(' Subject') }}</th>
+                            <th>{{ __('Education Stage') }}</th>
                             <th>{{ __('File') }}</th>
                             <th>{{ __('Action') }}</th>
                         </tr>
@@ -32,10 +33,8 @@
                                 <td>{{ $item->id }}</td>
                                 <td>{{ $item->name }}</td>
                                 <td>{{ $item->price }}</td>
-                                <td>
-                                    {{ $item->educationStageSubject->educationStage->name ?? '' }} -
-                                    {{ $item->educationStageSubject->subject->name ?? '' }}
-                                </td>
+                                <td>{{ $item->subject?->name  }}</td>
+                                <td>{{ $item->educationStage?->name  }}</td>
                                 <td>
                                     @if($item->file_path)
                                         <a href="{{ asset('storage/' . $item->file_path) }}" target="_blank">{{ __('View File') }}</a>
@@ -79,17 +78,39 @@
                                                     <label for="price-{{ $item->id }}">{{ __('Price') }}</label>
                                                     <input type="number" name="price" id="price-{{ $item->id }}" class="form-control" step="0.01" value="{{ old('price', $item->price) }}">
                                                 </div>
-
                                                 <div class="form-group">
-                                                    <label for="education_stage_subject_id-{{ $item->id }}">{{ __('Education Stage - Subject') }}</label>
-                                                    <select name="education_stage_subject_id" id="education_stage_subject_id-{{ $item->id }}" class="form-control" required>
-                                                        @foreach($educationStageSubjects as $ess)
-                                                            <option value="{{ $ess->id }}" {{ (old('education_stage_subject_id', $item->education_stage_subject_id) == $ess->id) ? 'selected' : '' }}>
-                                                                {{ $ess->educationStage->name ?? '' }} - {{ $ess->subject->name ?? '' }}
+                                                    <label>{{ __('Subjects') }} <span
+                                                            class="text-danger">*</span></label>
+                                                    <select name="subject_id" class="form-control edit-subject-select"
+                                                            data-item-id="{{ $item->id }}" required>
+
+                                                        <option value="">{{ __('Select Subject') }}</option>
+                                                        @foreach ($subjects as $subject)
+                                                            <option
+                                                                value="{{ $subject->id }}" {{ (old('subject_id', $item->subject_id) == $subject->id) ? 'selected' : '' }}>
+                                                                {{ $subject->name }}
                                                             </option>
                                                         @endforeach
                                                     </select>
                                                 </div>
+                                                <div class="form-group">
+
+                                                    <label>{{ __('Education Stages') }} <span
+                                                            class="text-danger">*</span></label>
+
+                                                    <select name="education_stage_id"
+                                                            class="form-control edit-stage-select"
+                                                            data-item-id="{{ $item->id }}">
+                                                        <option value="">{{ __('Select Education Stage') }}</option>
+                                                        @foreach ($educationStages as $stage)
+                                                            <option
+                                                                value="{{ $stage->id }}" {{ (old('education_stage_id', $item->education_stage_id) == $stage->id) ? 'selected' : '' }}>
+                                                                {{ $stage->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+
 
                                                 <div class="form-group">
                                                     <label for="file-{{ $item->id }}">{{ __('Upload File') }}</label>
@@ -128,6 +149,41 @@
 
 @section('script')
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            // تابع تغيير المادة داخل المودال
+            document.querySelectorAll('.edit-subject-select').forEach(function (select) {
+                select.addEventListener('change', function () {
+                    const subjectId = this.value;
+                    const itemId = this.getAttribute('data-item-id');
+                    const stageSelect = document.querySelector('.edit-stage-select[data-item-id="' + itemId + '"]');
+
+                    if (!subjectId) {
+                        // امسح الخيارات إذا لم يتم اختيار مادة
+                        stageSelect.innerHTML = '<option value="">{{ __("Select Education Stage") }}</option>';
+                        return;
+                    }
+
+                    fetch(`/admin/subjects/${subjectId}/related-stages`)
+                        .then(response => response.json())
+                        .then(data => {
+                            // امسح الخيارات القديمة
+                            stageSelect.innerHTML = '<option value="">{{ __("Select Education Stage") }}</option>';
+                            data.forEach(function (stage) {
+                                const option = document.createElement('option');
+                                option.value = stage.id;
+                                option.textContent = stage.name;
+                                stageSelect.appendChild(option);
+                            });
+                        })
+                        .catch(err => {
+                            console.error('Failed to load stages:', err);
+                        });
+                });
+            });
+
+        });
+
         document.addEventListener("DOMContentLoaded", function () {
             document.querySelectorAll('.deleted-btn').forEach(function (btn) {
                 btn.addEventListener('click', function (e) {

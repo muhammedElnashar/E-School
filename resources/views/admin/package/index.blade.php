@@ -23,7 +23,8 @@
                             <th>{{ __('Package Scope') }}</th>
                             <th>{{ __('Price') }}</th>
                             <th>{{ __('Lecture Credits') }}</th>
-                            <th>{{ __('Education Stage - Subject') }}</th>
+                            <th>{{ __(' Subject') }}</th>
+                            <th>{{ __('Education Stage') }}</th>
                             <th>{{ __('Action') }}</th>
                         </tr>
                         </thead>
@@ -32,87 +33,121 @@
                             <tr>
                                 <td>{{ $item->id }}</td>
                                 <td>{{ $item->name }}</td>
-                                <td>{{ $item->package_scope}}</td>
+                                <td>{{ $item->package_scope }}</td>
                                 <td>{{ $item->price }}</td>
                                 <td>{{ $item->lecture_credits }}</td>
+                                <td>{{ $item->subject?->name  }}</td>
+                                <td>{{ $item->educationStage?->name  }}</td>
                                 <td>
-                                    {{ $item->educationStageSubject->educationStage->name ?? '' }} -
-                                    {{ $item->educationStageSubject->subject->name ?? '' }}
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal-{{ $item->id }}">
+                                    <button type="button" class="btn btn-sm btn-warning" data-toggle="modal"
+                                            data-target="#editModal-{{ $item->id }}">
                                         {{ __('Edit') }}
                                     </button>
-                                    <form action="{{ route('package.destroy', $item->id) }}" method="POST" class="d-inline">
+                                    <form action="{{ route('package.destroy', $item->id) }}" method="POST"
+                                          class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger deleted-btn">{{ __('Delete') }}</button>
+                                        <button type="submit"
+                                                class="btn btn-sm btn-danger deleted-btn">{{ __('Delete') }}</button>
                                     </form>
                                 </td>
                             </tr>
 
                             <!-- Edit Modal -->
-                            <div class="modal fade" id="editModal-{{ $item->id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel-{{ $item->id }}" aria-hidden="true">
+                            <div class="modal fade" id="editModal-{{ $item->id }}" tabindex="-1" role="dialog"
+                                 aria-labelledby="editModalLabel-{{ $item->id }}" aria-hidden="true">
                                 <div class="modal-dialog modal-md" role="document">
-                                    <form action="{{ route('package.update', $item->id) }}" method="POST" enctype="multipart/form-data" class="w-100">
+                                    <form action="{{ route('package.update', $item->id) }}" method="POST"
+                                          enctype="multipart/form-data" class="w-100">
                                         @csrf
                                         @method('PUT')
                                         <div class="modal-content">
                                             <div class="modal-header bg-primary text-white">
-                                                <h5 class="modal-title">{{ __('Edit Package') }} - {{ $item->name }}</h5>
-                                                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                                <h5 class="modal-title">{{ __('Edit Package') }}
+                                                    - {{ $item->name }}</h5>
+                                                <button type="button" class="close text-white" data-dismiss="modal"
+                                                        aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
 
                                             <div class="modal-body">
                                                 <div class="form-group">
-                                                    <label>{{ __('Name') }}</label>
-                                                    <input type="text" name="name" class="form-control" value="{{ $item->name }}" required>
+                                                    <label>{{ __('Name') }} <span class="text-danger">*</span></label>
+                                                    <input type="text" name="name" class="form-control"
+                                                           value="{{ old('name', $item->name) }}" required>
                                                 </div>
 
                                                 <div class="form-group">
                                                     <label>{{ __('Description') }}</label>
-                                                    <textarea name="description" class="form-control" rows="2">{{ $item->description }}</textarea>
+                                                    <textarea name="description" class="form-control"
+                                                              rows="2">{{ old('description', $item->description) }}</textarea>
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label>{{ __('Price') }}</label>
-                                                    <input type="number" name="price" class="form-control" value="{{ $item->price }}" required >
+                                                    <label>{{ __('Price') }} <span class="text-danger">*</span></label>
+                                                    <input type="number" step="0.01" name="price" class="form-control"
+                                                           value="{{ old('price', $item->price) }}" required>
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label>{{ __('Lecture Credits') }}</label>
-                                                    <input type="number" name="lecture_credits" class="form-control" value="{{ $item->lecture_credits }}" required>
+                                                    <label>{{ __('Lecture Credits') }} <span
+                                                            class="text-danger">*</span></label>
+                                                    <input type="number" name="lecture_credits" class="form-control"
+                                                           value="{{ old('lecture_credits', $item->lecture_credits) }}"
+                                                           required>
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label>{{ __('Package Scope') }}</label>
+                                                    <label>{{ __('Package Scope') }} <span class="text-danger">*</span></label>
                                                     <select name="package_scope" class="form-control" required>
                                                         @foreach (\App\Enums\Scopes::cases() as $scope)
-                                                            <option value="{{ $scope->value }}" {{ $item->package_scope === $scope ? 'selected' : '' }}>
+                                                            <option
+                                                                value="{{ $scope->value }}" {{ (old('package_scope', $item->package_scope) === $scope->value) ? 'selected' : '' }}>
                                                                 {{ __($scope->value) }}
                                                             </option>
                                                         @endforeach
                                                     </select>
                                                 </div>
-
-
                                                 <div class="form-group">
-                                                    <label>{{ __('Education Stage Subject') }}</label>
-                                                    <select name="education_stage_subject_id" class="form-control" required>
-                                                        @foreach ($educationStageSubjects as $ess)
-                                                            <option value="{{ $ess->id }}" {{ $item->education_stage_subject_id == $ess->id ? 'selected' : '' }}>
-                                                                {{ $ess->educationStage->name ?? '' }} - {{ $ess->subject->name ?? '' }}
+                                                    <label>{{ __('Subjects') }} <span
+                                                            class="text-danger">*</span></label>
+                                                    <select name="subject_id" class="form-control edit-subject-select"
+                                                            data-item-id="{{ $item->id }}" required>
+
+                                                        <option value="">{{ __('Select Subject') }}</option>
+                                                        @foreach ($subjects as $subject)
+                                                            <option
+                                                                value="{{ $subject->id }}" {{ (old('subject_id', $item->subject_id) == $subject->id) ? 'selected' : '' }}>
+                                                                {{ $subject->name }}
                                                             </option>
                                                         @endforeach
                                                     </select>
                                                 </div>
-                                            </div>
+                                                <div class="form-group">
 
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Close') }}</button>
-                                                <button type="submit" class="btn btn-success">{{ __('Save Changes') }}</button>
+                                                    <label>{{ __('Education Stages') }} <span
+                                                            class="text-danger">*</span></label>
+
+                                                    <select name="education_stage_id"
+                                                            class="form-control edit-stage-select"
+                                                            data-item-id="{{ $item->id }}">
+                                                        <option value="">{{ __('Select Education Stage') }}</option>
+                                                        @foreach ($educationStages as $stage)
+                                                            <option
+                                                                value="{{ $stage->id }}" {{ (old('education_stage_id', $item->education_stage_id) == $stage->id) ? 'selected' : '' }}>
+                                                                {{ $stage->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                            data-dismiss="modal">{{ __('Close') }}</button>
+                                                    <button type="submit"
+                                                            class="btn btn-success">{{ __('Save Changes') }}</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </form>
@@ -136,6 +171,41 @@
 
 @section('script')
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            // تابع تغيير المادة داخل المودال
+            document.querySelectorAll('.edit-subject-select').forEach(function (select) {
+                select.addEventListener('change', function () {
+                    const subjectId = this.value;
+                    const itemId = this.getAttribute('data-item-id');
+                    const stageSelect = document.querySelector('.edit-stage-select[data-item-id="' + itemId + '"]');
+
+                    if (!subjectId) {
+                        // امسح الخيارات إذا لم يتم اختيار مادة
+                        stageSelect.innerHTML = '<option value="">{{ __("Select Education Stage") }}</option>';
+                        return;
+                    }
+
+                    fetch(`/admin/subjects/${subjectId}/related-stages`)
+                        .then(response => response.json())
+                        .then(data => {
+                            // امسح الخيارات القديمة
+                            stageSelect.innerHTML = '<option value="">{{ __("Select Education Stage") }}</option>';
+                            data.forEach(function (stage) {
+                                const option = document.createElement('option');
+                                option.value = stage.id;
+                                option.textContent = stage.name;
+                                stageSelect.appendChild(option);
+                            });
+                        })
+                        .catch(err => {
+                            console.error('Failed to load stages:', err);
+                        });
+                });
+            });
+
+        });
+
         document.addEventListener("DOMContentLoaded", function () {
             document.querySelectorAll('.deleted-btn').forEach(function (btn) {
                 btn.addEventListener('click', function (e) {

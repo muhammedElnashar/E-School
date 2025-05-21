@@ -4,9 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\Scopes;
 use App\Http\Controllers\Controller;
-use App\Models\EducationStageSubject;
+use App\Models\EducationStage;
 use App\Models\MarketplaceItem;
 use App\Enums\MarketplaceItemType;
+use App\Models\Subject;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -14,34 +15,57 @@ class PackageController extends Controller
 {
     public function index()
     {
-        $packages = MarketplaceItem::where('type', MarketplaceItemType::Package->value)->paginate(5);
-        $educationStageSubjects = EducationStageSubject::with(['educationStage', 'subject'])->get();
-        return view('admin.package.index', compact('packages', 'educationStageSubjects'));
+        $packages = MarketplaceItem::where('type', MarketplaceItemType::Package->value)
+            ->with(['subject', 'educationStage'])
+            ->paginate(15);
+        $subjects = Subject::all();
+        $educationStages = EducationStage::all();
+
+        return view('admin.package.index', compact('packages', 'subjects', 'educationStages'));
     }
+
+
 
     public function create()
     {
-        $educationStageSubjects = EducationStageSubject::with(['educationStage', 'subject'])->get();
+        $subjects = Subject::all();
+        $educationStages = EducationStage::all();
 
-        return view('admin.package.create', compact('educationStageSubjects'));
+        return view('admin.package.create', compact('subjects', 'educationStages'));
     }
+
+
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'education_stage_subject_id' => [
-                'required',
-                'exists:education_stage_subjects,id',
-                Rule::unique('marketplace_items')->where(fn($query) => $query->where('type', MarketplaceItemType::Package->value)
-                ),
-            ], 'name' => 'required|string',
+            'subject_id' => ['required', 'exists:subjects,id'],
+            'education_stage_id' => ['nullable', 'exists:education_stages,id'],
+            'package_scope' => ['required', Rule::in(array_column(Scopes::cases(), 'value'))],
+            'name' => 'required|string',
             'price' => 'required|numeric',
             'lecture_credits' => 'required|integer',
             'description' => 'nullable|string',
-            'package_scope' => ['required', Rule::in(array_column(Scopes::cases(), 'value'))],
         ]);
+
         $validated['type'] = MarketplaceItemType::Package->value;
+
+        $exists = MarketplaceItem::where('type', $validated['type'])
+            ->where('subject_id', $validated['subject_id'])
+            ->where('package_scope', $validated['package_scope']);
+
+        if (is_null($validated['education_stage_id'])) {
+            $exists->whereNull('education_stage_id');
+        } else {
+            $exists->where('education_stage_id', $validated['education_stage_id']);
+        }
+
+        if ($exists->exists()) {
+            return back()->withErrors(['duplicate' => 'A package with the same subject, education stage, and scope already exists.'])->withInput();
+        }
+
         MarketplaceItem::create($validated);
+
         return redirect()->route('package.index')->with('success', 'Package created successfully');
     }
 
@@ -53,26 +77,35 @@ class PackageController extends Controller
     public function update(Request $request, MarketplaceItem $package)
     {
         $validated = $request->validate([
-            'education_stage_subject_id' => [
-                'required',
-                'exists:education_stage_subjects,id',
-                Rule::unique('marketplace_items', 'education_stage_subject_id')
-                    ->where(fn ($query) =>
-                    $query->where('type', MarketplaceItemType::Package->value)
-                    )
-                    ->ignore($package->id),
-            ],
-            'name' => 'required|string|max:255',
-            'price' => 'required|numeric|min:0',
-            'lecture_credits' => 'required|integer|min:0',
-            'description' => 'nullable|string',
+            'subject_id' => ['required', 'exists:subjects,id'],
+            'education_stage_id' => ['nullable', 'exists:education_stages,id'],
             'package_scope' => ['required', Rule::in(array_column(Scopes::cases(), 'value'))],
+            'name' => 'required|string',
+            'price' => 'required|numeric',
+            'lecture_credits' => 'required|integer',
+            'description' => 'nullable|string',
         ]);
+
         $validated['type'] = MarketplaceItemType::Package->value;
+
+        $exists = MarketplaceItem::where('type', $validated['type'])
+            ->where('subject_id', $validated['subject_id'])
+            ->where('package_scope', $validated['package_scope'])
+            ->where('id', '!=', $package->id);
+
+        if (is_null($validated['education_stage_id'])) {
+            $exists->whereNull('education_stage_id');
+        } else {
+            $exists->where('education_stage_id', $validated['education_stage_id']);
+        }
+
+        if ($exists->exists()) {
+            return back()->withErrors(['duplicate' => 'A package with the same subject, education stage, and scope already exists.'])->withInput();
+        }
 
         $package->update($validated);
 
-        return redirect()->back()->with('success', __('Package updated successfully.'));
+        return redirect()->route('package.index')->with('success', 'Package updated successfully');
     }
     public function destroy($id)
     {

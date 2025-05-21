@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
     {
 
         $this->call(AddSuperAdminSeeder::class);
-        $this->call(MarketplaceSeeder::class);
+/*        $this->call(MarketplaceSeeder::class);*/
 //        $this->call(DummyDataSeeder::class);
 //        $this->call(InstallationSeeder::class);
 

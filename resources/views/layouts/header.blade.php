@@ -42,8 +42,13 @@
 
             <li class="nav-item nav-profile dropdown"><a class="nav-link dropdown-toggle" id="profileDropdown" href="#"
                                                          data-toggle="dropdown" aria-expanded="true">
-                    <div class="nav-profile-img"><img src="{{ Auth::user()->image }}" alt="image"
-                                                      onerror="onErrorImage(event)"></div>
+                    @if(auth()->user()->role === 'admin')
+                        <img src="{{ asset('assets/admin.jpg') }}" alt="image" class="nav-profile-img">
+                    @else
+                        <div class="nav-profile-img"><img src="{{ Auth::user()->image }}" alt="image"
+                                                          onerror="onErrorImage(event)"></div>
+                    @endif
+
                     <div class="nav-profile-text"><p class="mb-1 text-black">{{ Auth::user()->name }}</p></div>
                 </a>
                 <div class="dropdown-menu navbar-dropdown"

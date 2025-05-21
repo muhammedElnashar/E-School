@@ -22,18 +22,18 @@ class PackageResource extends JsonResource
             'type' => $this->type,
             'package_scope' => $this->package_scope,
             'lecture_credits' => $this->lecture_credits,
-            'education_stage_subject' => [
-                'subject' => [
-                    'id' => $this->educationStageSubject->subject->id,
-                    'name' => $this->educationStageSubject->subject->name,
-                ],
-                'education_stage' => [
-                    'id' => $this->educationStageSubject->educationStage->id,
-                    'name' => $this->educationStageSubject->educationStage->name,
-                ],
-
-            ],
-
+            'subject' => $this->whenLoaded('subject', function () {
+                return $this->subject ? [
+                    'id' => $this->subject->id,
+                    'name' => $this->subject->name,
+                ] : null;
+            }),
+            'education_stage' => $this->whenLoaded('educationStage', function () {
+                return $this->educationStage ? [
+                    'id' => $this->educationStage->id,
+                    'name' => $this->educationStage->name,
+                ] : null;
+            }),
         ];
     }
 }

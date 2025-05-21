@@ -12,7 +12,8 @@ class MarketplaceItem extends Model
     use HasFactory;
 
     protected $fillable = [
-        'education_stage_subject_id',
+        'subject_id',
+        'education_stage_id',
         'name',
         'description',
         'type',
@@ -22,9 +23,16 @@ class MarketplaceItem extends Model
         'file_path',
     ];
 
-    public function educationStageSubject()
+    public function subject()
     {
-        return $this->belongsTo(EducationStageSubject::class);
+        return $this->belongsTo(Subject::class);
+    }
+
+    /**
+     */
+    public function educationStage()
+    {
+        return $this->belongsTo(EducationStage::class);
     }
     protected $casts = [
         'type' => MarketplaceItemType::class,

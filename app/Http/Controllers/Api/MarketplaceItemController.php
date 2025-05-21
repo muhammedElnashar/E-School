@@ -15,7 +15,7 @@ class MarketplaceItemController extends Controller
 {
     public function getPackages()
     {
-        $packages = MarketplaceItem::with('educationStageSubject.educationStage', 'educationStageSubject.subject')
+        $packages = MarketplaceItem::with('subject', 'educationStage')
             ->where('type', MarketplaceItemType::Package->value)
             ->get();
         return response()->json([
@@ -25,7 +25,7 @@ class MarketplaceItemController extends Controller
 
     public function getDigitalAssets()
     {
-        $digitalAssets = MarketplaceItem::with('educationStageSubject.educationStage', 'educationStageSubject.subject')
+        $digitalAssets = MarketplaceItem::with('subject', 'educationStage')
             ->where('type', MarketplaceItemType::DigitalAsset->value)
             ->get();
 

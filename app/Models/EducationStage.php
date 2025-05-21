@@ -15,6 +15,9 @@ class EducationStage extends Model
     {
         return $this->belongsToMany(Subject::class, 'education_stage_subjects');
     }
-
+    public function marketplaceItems()
+    {
+        return $this->hasMany(MarketplaceItem::class);
+    }
 
 }

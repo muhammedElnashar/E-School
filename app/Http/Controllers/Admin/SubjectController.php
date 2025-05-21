@@ -1,11 +1,11 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\EducationStage;
 use App\Models\Subject;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class SubjectController extends Controller
 {
@@ -17,8 +17,16 @@ class SubjectController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate(['name' => 'required|unique:subjects']);
-        Subject::create($request->only('name'));
+      $data=  $request->validate([
+            'name' => 'required|unique:subjects',
+            'image'=>'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+        if ($request->hasFile('image')){
+            $path= $request->file('image')->store('images/subjects', 'public');
+            $data['image'] = $path;
+        }
+
+        Subject::create($data);
         return redirect()->route('subjects.index')->with('success', 'Subject created successfully.');
     }
     public function show($id)
@@ -28,21 +36,39 @@ class SubjectController extends Controller
     public function edit($id)
     {
         $subject = Subject::findOrFail($id);
-        return response()->json($subject);
-
+        return response()->json([
+            'id' => $subject->id,
+            'name' => $subject->name,
+            'image_url' => asset('storage/' . $subject->image),
+        ]);
     }
 
     public function update(Request $request, $id)
     {
-        $request->validate(['name' => 'required|unique:subjects,name,' . $id]);
+        $data = $request->validate([
+            'name' => 'required|unique:subjects,name,' . $id,
+            'image'=>'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            ]);
+
         $subject = Subject::findOrFail($id);
-        $subject->update(['name' => $request->name]);
+        if ($request->hasFile('image')){
+            if ($subject->image){
+                Storage::disk('public')->delete($subject->image);
+            }
+            $path= $request->file('image')->store('images/subjects', 'public');
+            $data['image'] = $path;
+        }
+        $subject->update($data);
         return redirect()->route('subjects.index')->with('success', 'Subject updated successfully.');
     }
 
     public function destroy($id)
     {
-        Subject::findOrFail($id)->delete();
+       $subject= Subject::findOrFail($id);
+        if ($subject->image){
+            Storage::disk('public')->delete($subject->image);
+        }
+        $subject->delete();
         return redirect()->route('subjects.index')->with('success', 'Subject deleted successfully.');
     }
 
@@ -62,6 +88,15 @@ class SubjectController extends Controller
             'selectedStages' => $subject->stages->pluck('id')->toArray(),
         ]);
     }
+    // For Packages
+    public function getRelatedStages($subjectId)
+    {
+        $subject = Subject::findOrFail($subjectId);
+        $stages = $subject->stages()->select('education_stages.id', 'education_stages.name')->get();
+        $stages->makeHidden('pivot');
+        return response()->json($stages);
+    }
+
 
     public function syncStages(Request $request, $subjectId)
     {

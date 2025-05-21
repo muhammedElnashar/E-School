@@ -16,11 +16,15 @@
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title">{{ __('create') . ' ' . __('subject') }}</h4>
-                        <form class="pt-3" method="POST" action="{{ route('subjects.store') }}">
+                        <form class="pt-3" method="POST" action="{{ route('subjects.store') }}" enctype="multipart/form-data">
                             @csrf
                             <div class="form-group">
                                 <label>{{ __('name') }} <span class="text-danger">*</span></label>
                                 <input type="text" name="name" class="form-control" required placeholder="{{ __('name') }}">
+                            </div>
+                            <div class="form-group">
+                                <label>{{ __('image') }} <span class="text-danger">*</span></label>
+                                <input type="file" name="image" class="form-control" required placeholder="{{ __('image') }}">
                             </div>
                             <input class="btn btn-theme" type="submit" value="{{ __('submit') }}">
                         </form>
@@ -46,6 +50,7 @@
                                 <tr>
                                     <td>{{ $subject->id }}</td>
                                     <td>{{ $subject->name }}</td>
+                                    <td><img src="{{asset('storage/'.$subject->image)}}" alt=""></td>
                                     <td class="d-flex">
                                         <button
                                             class="btn btn-warning btn-sm mr-2 btn-edit"
@@ -76,7 +81,7 @@
         {{-- مودال التعديل --}}
         <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editSubjectLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
-                <form method="POST" id="editForm">
+                <form method="POST" id="editForm" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <div class="modal-content">
@@ -91,6 +96,13 @@
                             <div class="form-group">
                                 <label>{{ __('name') }} <span class="text-danger">*</span></label>
                                 <input type="text" name="name" id="edit-name" class="form-control" required placeholder="{{ __('name') }}">
+                            </div>
+                            <div class="form-group">
+                                <label>{{ __('image') }} <span class="text-danger">*</span></label>
+                                <input type="file" name="image" id="edit-image" class="form-control" placeholder="{{ __('image') }}">
+                                <div class="mt-2">
+                                    <img id="current-image" src="" alt="Current Image" style="max-width: 100px; border-radius: 8px;">
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -110,15 +122,17 @@
             // فتح مودال التعديل وتحميل البيانات
             $('.btn-edit').click(function () {
                 let url = $(this).data('url');
-                // جلب بيانات الموضوع
                 $.get(url, function (data) {
+                    console.log(data); // تحقق هنا
+
                     $('#edit-id').val(data.id);
                     $('#edit-name').val(data.name);
 
-                    // تعديل فورم الإرسال ليشمل رابط التحديث الصحيح
-                    $('#editForm').attr('action', '/subjects/' + data.id);
+                    $('#editForm').attr('action', 'subjects/'+data.id );
 
-                    // فتح المودال
+                    // عرض الصورة الحالية
+                    $('#current-image').attr('src', data.image_url); // تأكد أن `image_url` موجود في البيانات المسترجعة
+
                     $('#editModal').modal('show');
                 });
             });

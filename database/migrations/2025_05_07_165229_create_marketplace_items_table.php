@@ -15,7 +15,8 @@ return new class extends Migration
     {
         Schema::create('marketplace_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('education_stage_subject_id')->constrained()->onDelete('cascade');
+            $table->foreignId('subject_id')->constrained()->onDelete('cascade');
+            $table->foreignId('education_stage_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('name');
             $table->text('description')->nullable();
             $table->string('type');
@@ -24,6 +25,8 @@ return new class extends Migration
             $table->integer('lecture_credits')->default(0); // فقط للباقات
             $table->string('file_path')->nullable(); // مسار الملف إذا كان محتوى رقمي
             $table->timestamps();
+            $table->index(['type', 'subject_id', 'education_stage_id', 'package_scope'], 'marketplace_items_composite_index');
+
         });
     }
 

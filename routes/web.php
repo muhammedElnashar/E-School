@@ -22,13 +22,15 @@ use App\Http\Controllers\SettingController;
 */
 Auth::routes();
 
-Route::get('/subjects/stages-management', [SubjectController::class, 'stagesManagement'])->name('subjects.stages.management');
 Route::prefix('admin')->middleware('auth')->group(function () {
+    Route::get('/subjects/stages-management', [SubjectController::class, 'stagesManagement'])->name('subjects.stages.management');
     Route::get('/subjects/{subject}/stages', [SubjectController::class, 'getStages']);
     Route::post('/subjects/{subject}/stages/sync', [SubjectController::class, 'syncStages']);
     Route::resource('subjects', SubjectController::class);
     Route::resource('education/stages', EducationStageController::class);
+
     Route::resource('marketplace-items/package', PackageController::class);
+    Route::get('/subjects/{subject}/related-stages', [SubjectController::class, 'getRelatedStages']);
     Route::resource('marketplace-items/digital-assets', DigitalAssetController::class);
     Route::get('/', [DashboardController::class, 'index']);
 

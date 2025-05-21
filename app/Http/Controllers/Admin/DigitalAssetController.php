@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\Scopes;
 use App\Http\Controllers\Controller;
+use App\Models\EducationStage;
 use App\Models\EducationStageSubject;
 use App\Models\MarketplaceItem;
 use App\Enums\MarketplaceItemType;
+use App\Models\Subject;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
@@ -15,22 +17,27 @@ class DigitalAssetController extends Controller
 {
     public function index()
     {
-        $digitalAssets = MarketplaceItem::where('type', MarketplaceItemType::DigitalAsset)->paginate(15);
-        $educationStageSubjects = EducationStageSubject::with(['educationStage', 'subject'])->get();
+        $digitalAssets = MarketplaceItem::where('type', MarketplaceItemType::DigitalAsset->value)
+            ->with(['subject', 'educationStage'])
+            ->paginate(15);
+        $subjects = Subject::all();
+        $educationStages = EducationStage::all();
 
-        return view('admin.digital_assets.index', compact('digitalAssets', 'educationStageSubjects'));
+        return view('admin.digital_assets.index', compact('digitalAssets', 'subjects', 'educationStages'));
     }
 
     public function create()
     {
-        $educationStageSubjects = EducationStageSubject::with(['educationStage', 'subject'])->get();
-        return view('admin.digital_assets.create', compact('educationStageSubjects'));
+        $subjects = Subject::all();
+        $educationStages = EducationStage::all();
+        return view('admin.digital_assets.create', compact('subjects', 'educationStages'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'education_stage_subject_id' => ['required', 'exists:education_stage_subjects,id'],
+            'subject_id' => ['required', 'exists:subjects,id'],
+            'education_stage_id' => ['nullable', 'exists:education_stages,id'],
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
             'description' => 'nullable|string',
@@ -51,30 +58,28 @@ class DigitalAssetController extends Controller
        //
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, MarketplaceItem $asset)
     {
-        $digitalAsset = MarketplaceItem::findOrFail($id);
 
-        $request->validate([
+        $validated =   $request->validate([
+            'subject_id' => ['required', 'exists:subjects,id'],
+            'education_stage_id' => ['nullable', 'exists:education_stages,id'],
             'name' => 'required|string|max:255',
-            'price' => 'required|numeric|min:0',
-            'education_stage_subject_id' => 'required|exists:education_stage_subjects,id',
             'file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,csv|max:20480', // 20MB max
+            'price' => 'required|numeric|min:0',
         ]);
 
-        $digitalAsset->name = $request->input('name');
-        $digitalAsset->price = $request->input('price');
-        $digitalAsset->education_stage_subject_id = $request->input('education_stage_subject_id');
+        $validated['type'] = MarketplaceItemType::DigitalAsset->value;
+
         if ($request->hasFile('file')) {
-            if ($digitalAsset->file_path && Storage::disk('public')->exists($digitalAsset->file_path)) {
-                Storage::disk('public')->delete($digitalAsset->file_path);
+            if ($asset->file_path && Storage::disk('public')->exists($asset->file_path)) {
+                Storage::disk('public')->delete($asset->file_path);
             }
+            $file_path = $request->file('file')->store('digital_assets', 'public');
 
-          $digitalAsset->file_path = $request->file('file')->store('digital_assets', 'public');
+            $validated['file_path'] = $file_path;
         }
-
-        $digitalAsset->save();
-
+        $asset->update($validated);
         return redirect()->route('digital-assets.index')->with('success', __('Digital asset updated successfully.'));
     }
 

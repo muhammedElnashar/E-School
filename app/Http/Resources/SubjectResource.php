@@ -14,9 +14,14 @@ class SubjectResource extends JsonResource
      */
     public function toArray($request)
     {
+        $levels = $this->stages->pluck('name');
+
         return [
-            'name'=> $this->name,
-                'levels'=> $this->stages->pluck('name')
+            'id'     => $this->id,
+            'name'   => $this->name,
+            'image'  => asset("storage/" . $this->image),
+            'levels' => $levels->isEmpty() ? "" : $levels,
+
         ];
     }
 }
