@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('lesson_id')->constrained()->onDelete('cascade');
             $table->integer('weeks_count');
-            $table->json('exception_dates');
+            $table->json('exception_dates')->nullable();
             $table->timestamps();
         });
     }

@@ -1,12 +1,11 @@
 <?php
 
-use App\Http\Controllers\Admin\DigitalAssetController;
-use App\Http\Controllers\Admin\PackageController;
-use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\EmailVerify;
-use App\Http\Controllers\Api\MarketplaceItemController;
-use App\Http\Controllers\Api\ResetPassword;
-use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\StudentApi\EmailVerify;
+use App\Http\Controllers\StudentApi\MarketplaceItemController;
+use App\Http\Controllers\StudentApi\ResetPassword;
+use App\Http\Controllers\TeacherApi\AuthController;
+use App\Http\Controllers\TeacherApi\LessonController;
+use App\Http\Controllers\TeacherApi\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,88 +30,54 @@ Route::group(['prefix' => 'student'], function () {
 
     // Auth
     Route::middleware('guest')->group(function () {
-        Route::post('/register', [AuthController::class, 'register']);
-        Route::post('/login', [AuthController::class, 'login']);
-        Route::post('/auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
+        Route::post('/register', [\App\Http\Controllers\StudentApi\AuthController::class, 'studentRegister']);
+        Route::post('/login', [\App\Http\Controllers\StudentApi\AuthController::class, 'studentLogin']);
+        Route::post('/auth/google/callback', [\App\Http\Controllers\StudentApi\AuthController::class, 'handleGoogleCallback']);
         //Reset Password
         Route::post('send/otp/reset/password', [ResetPassword::class, 'sendResetPasswordOtp']);
         Route::post('verify/otp/reset/password', [ResetPassword::class, 'verifyResetPasswordOtp']);
         Route::post('reset/password', [ResetPassword::class, 'resetPassword']);
     });
 
-
     //Authenticated APIs
-    Route::group(['middleware' => 'auth:sanctum', 'isStudent'], function () {
-        Route::post('logout', [AuthController::class, 'logout']);
+    Route::group(['middleware' => ['auth:sanctum', 'isStudent']], function () {
+        Route::post('logout', [\App\Http\Controllers\StudentApi\AuthController::class, 'studentLogout']);
         Route::post('email/verify', [EmailVerify::class, 'Verify']);
         Route::post('resend/email/verify', [EmailVerify::class, 'resendVerificationOtp']);
         // User
-        Route::patch('update/user/profile', [UserController::class, 'updateUserProfile']);
-        Route::delete('delete/user/profile', [UserController::class, 'deleteUserProfile']);
+        Route::patch('update/user/profile', [\App\Http\Controllers\StudentApi\UserController::class, 'updateStudentProfile']);
+        Route::delete('delete/user/profile', [\App\Http\Controllers\StudentApi\UserController::class, 'deleteStudentProfile']);
         //Marketplace Items
 
         Route::get('/packages', [MarketplaceItemController::class, 'getPackages']);
         Route::get('/digital-assets', [MarketplaceItemController::class, 'getDigitalAssets']);
         Route::get('/subjects', [MarketplaceItemController::class, 'getAllSubject']);
 
+
     });
 
 
-    /*    Route::group(['middleware' => 'auth:sanctum'], function () {
-            Route::get('dashboard',[StudentApiController::class,'dashboard']);
-            Route::get('subjects', [StudentApiController::class, 'subjects']);
-            Route::get('class-subjects', [StudentApiController::class, 'classSubjects']);
-            Route::post('select-subjects', [StudentApiController::class, 'selectSubjects']);
-            Route::get('parent-details', [StudentApiController::class, 'getParentDetails']);
-            Route::get('timetable', [StudentApiController::class, 'getTimetable']);
-            Route::get('lessons', [StudentApiController::class, 'getLessons']);
-            Route::get('lesson-topics', [StudentApiController::class, 'getLessonTopics']);
-            Route::get('assignments', [StudentApiController::class, 'getAssignments']);
-            Route::post('submit-assignment', [StudentApiController::class, 'submitAssignment']);
-            Route::post('edit-assignment', [StudentApiController::class, 'editAssignmentSubmission']);
-            Route::post('delete-assignment-submission', [StudentApiController::class, 'deleteAssignmentSubmission']);
-            Route::get('attendance', [StudentApiController::class, 'getAttendance']);
-            Route::get('announcements', [StudentApiController::class, 'getAnnouncements']);
-            Route::get('get-exam-list', [StudentApiController::class, 'getExamList']); // Exam list Route
-            Route::get('get-exam-details', [StudentApiController::class, 'getExamDetails']); // Exam Details Route
-            Route::get('exam-marks', [StudentApiController::class, 'getExamMarks']); // Exam Details Route
+});
+/**
+ * Teacher APIs
+ **/
+Route::group(['prefix' => 'teacher'], function () {
 
-            // online exam routes
-            Route::get('get-online-exam-list', [StudentApiController::class, 'getOnlineExamList']); // Get Online Exam List Route
-            Route::get('get-online-exam-questions', [StudentApiController::class, 'getOnlineExamQuestions']); // Get Online Exam Questions Route
-            Route::post('submit-online-exam-answers', [StudentApiController::class, 'submitOnlineExamAnswers']); // Submit Online Exam Answers Details Route
-            Route::get('get-online-exam-result-list', [StudentApiController::class, 'getOnlineExamResultList']); // Online exam result list Route
-            Route::get('get-online-exam-result', [StudentApiController::class, 'getOnlineExamResult']); // Online exam result  Route
+    // Auth
+    Route::middleware('guest')->group(function () {
+        Route::post('/login', [AuthController::class, 'teacherLogin']);
+    });
+    //Authenticated APIs
+    Route::group(['middleware' => ['auth:sanctum', 'isTeacher']], function () {
+        Route::post('teacher/logout', [AuthController::class, 'TeacherLogout']);
+        // User
+        Route::patch('update/teacher/profile', [UserController::class, 'updateTeacherProfile']);
+        //Lessons
+        Route::post('/lesson', [LessonController::class, 'store']);
+        Route::put('/lesson/{lesson}', [LessonController::class, 'update']);
+        Route::delete('/lesson/{lesson}', [LessonController::class, 'destroy']);
 
-            //reports
-            Route::get('get-online-exam-report', [StudentApiController::class, 'getOnlineExamReport']); // Online Exam Report Route
-            Route::get('get-assignments-report', [StudentApiController::class, 'getAssignmentReport']); // Assignment Report Route
-
-            // profile data
-            Route::get('get-profile-data', [StudentApiController::class, 'getProfileDetails']); // Get Profile Data
-            Route::get('get-notification',[StudentApiController::class, 'getNotifications']); // Get Notification Data
-
-            Route::get('get-user-list',[StudentApiController::class,'getChatUserList']);
-            Route::post('send-message',[StudentApiController::class,'sendMessage']);
-            Route::post('get-user-message',[StudentApiController::class,'getUserChatMessage']);
-            Route::post('read-all-message',[StudentApiController::class, 'readAllMessages']);
-
-            //fees
-            Route::get('fees-details', [StudentApiController::class, 'getFeesDetails']); //Fees Details
-            Route::post('add-fees-transaction', [StudentApiController::class, 'storeFeesTransaction']); //Fees Details
-            Route::post('store-fees', [StudentApiController::class, 'storeFees']); //Store Fees
-            Route::get('fees-paid-list', [StudentApiController::class, 'feesPaidList']); //Fees Details
-            Route::get('fees-paid-receipt-pdf', [StudentApiController::class, 'feesPaidReceiptPDF']); //Fees Receipt
-            Route::get('fees-transactions-list', [StudentApiController::class, 'getFeesPaymentTransactions']); //Fees Payment Transaction Details
-            Route::post('fail-payment-transaction', [StudentApiController::class, 'failPaymentTransactionStatus']); // Make Payment Transaction Fail API
-
-              //fee notification
-            Route::get('send-fee-notification', [StudentApiController::class, 'sendFeeNotification']);
-
-            Route::post('apply-leave',[StudentApiController::class, 'applyLeave']);
-            Route::post('get-leave-list',[StudentApiController::class, 'getMyLeave']);
-            Route::post('delete-leave',[StudentApiController::class, 'deleteLeave']);
-        });*/
+    });
 });
 
 

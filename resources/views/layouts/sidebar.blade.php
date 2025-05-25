@@ -56,6 +56,21 @@
                 </ul>
             </div>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#teacher-menu" aria-expanded="false"
+               aria-controls="teacher-menu">
+                <i class="fa fa-university menu-icon"></i><span class="menu-title">{{ __('Teachers') }}</span>
+                <i class="fa fa-angle-left fa-2xl menu-arrow"></i>
+            </a>
+            <div class="collapse" id="teacher-menu">
+                <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{route("teacher.index")}}"> {{ __(' Teacher List') }} </a>
+                        </li>
+
+                </ul>
+            </div>
+        </li>
 
 
         {{--        @hasrole('Super Admin')--}}

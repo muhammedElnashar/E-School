@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\StudentApi;
 
 use App\Helpers\ErrorHandler;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DeleteUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
@@ -17,7 +16,7 @@ class UserController extends Controller
     {
         $this->middleware(['auth:sanctum','isStudent']);
     }
-    public function updateUserProfile(UpdateUserRequest $request)
+    public function updateStudentProfile(UpdateUserRequest $request)
     {
         try {
             $user = auth()->user();
@@ -31,6 +30,9 @@ class UserController extends Controller
                 }
                 $user->image = $request->file('image')->store('images/users', 'public');
             }
+            if ($request->has('phone')) {
+                $user->phone = $request->input('phone');
+            }
             $user->save();
             return response()->json([
                 'message' => 'Profile updated successfully',
@@ -42,7 +44,7 @@ class UserController extends Controller
 
     }
 
-    public function deleteUserProfile(DeleteUserRequest $request)
+    public function deleteStudentProfile(DeleteUserRequest $request)
     {
         try {
             $data = $request->validated();

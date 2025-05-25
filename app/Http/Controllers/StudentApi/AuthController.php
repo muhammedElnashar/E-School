@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\StudentApi;
 
 
 use App\Helpers\ErrorHandler;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Resources\StudentResource;
 use App\Http\Resources\UserResource;
 use App\Mail\EmailVerificationOtp;
 use App\Models\Otp;
@@ -16,13 +17,12 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
-    public function register(RegisterRequest $request)
+    public function studentRegister(RegisterRequest $request)
     {
         try {
             $data =$request->all();
@@ -44,7 +44,7 @@ class AuthController extends Controller
             $token = $user->createToken('auth_token')->plainTextToken;
             return response()->json([
                 'message' => 'User registered successfully',
-                'user' => $user,
+                'user' => new StudentResource($user),
                 'token' => $token,
             ], 201);
         }catch (\Throwable $e){
@@ -54,7 +54,7 @@ class AuthController extends Controller
     }
 
 
-    public function login(LoginRequest $request)
+    public function studentLogin(LoginRequest $request)
     {
         $user= User::where('email', $request->email)->first();
         if (!$user || !Hash::check($request->password, $user->password)) {
@@ -65,12 +65,12 @@ class AuthController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
         return response()->json([
             'message' => 'User logged in successfully',
-            'user' => $user,
+            'user' => new StudentResource($user),
             'token' => $token
         ]);
 
     }
-    public function logout()
+    public function studentLogout()
     {
         auth()->user()->tokens()->delete();
         return response()->json([
@@ -105,7 +105,7 @@ class AuthController extends Controller
         if ($existingUser) {
             $token = $existingUser->createToken('auth_token')->plainTextToken;
             return response()->json([
-                'user' => new UserResource($existingUser),
+                'user' => new StudentResource($existingUser),
                 'token' => $token
             ], 200);
         } else {
@@ -143,7 +143,7 @@ class AuthController extends Controller
 
             return response()->json([
                 'message' => 'User registered successfully. Please check your email to verify.',
-                'user' => new UserResource($newUser),
+                'user' => new StudentResource($newUser),
                 'token' => $token
             ], 201);
         }

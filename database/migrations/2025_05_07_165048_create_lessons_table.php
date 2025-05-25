@@ -17,13 +17,13 @@ return new class extends Migration
             $table->id();
             $table->foreignId('teacher_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('subject_id')->constrained()->onDelete('cascade');
-            $table->foreignId('education_stage_subject_id')->constrained()->onDelete('cascade');
+            $table->foreignId('education_stage_id')->constrained()->onDelete('cascade');
             $table->dateTime('start_datetime');
             $table->dateTime('end_datetime');
             $table->string('zoom_link')->nullable();
             $table->integer('reschedules_count')->default(0);
-            $table->enum('lesson_type', ['individual', 'group','both']);
-
+            $table->string('lesson_type');
+            $table->timestamps();
         });
     }
 

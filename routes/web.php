@@ -28,10 +28,12 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::post('/subjects/{subject}/stages/sync', [SubjectController::class, 'syncStages']);
     Route::resource('subjects', SubjectController::class);
     Route::resource('education/stages', EducationStageController::class);
+    Route::resource('teacher', \App\Http\Controllers\Admin\TeacherController::class);
 
     Route::resource('marketplace-items/package', PackageController::class);
     Route::get('/subjects/{subject}/related-stages', [SubjectController::class, 'getRelatedStages']);
     Route::resource('marketplace-items/digital-assets', DigitalAssetController::class);
+
     Route::get('/', [DashboardController::class, 'index']);
 
 

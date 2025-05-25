@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\StudentApi;
 
 use App\Enums\MarketplaceItemType;
 use App\Http\Controllers\Controller;
@@ -9,7 +9,6 @@ use App\Http\Resources\PackageResource;
 use App\Http\Resources\SubjectResource;
 use App\Models\MarketplaceItem;
 use App\Models\Subject;
-use Illuminate\Http\Request;
 
 class MarketplaceItemController extends Controller
 {

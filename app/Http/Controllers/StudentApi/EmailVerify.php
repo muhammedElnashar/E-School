@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\StudentApi;
 
 use App\Helpers\ErrorHandler;
 use App\Http\Controllers\Controller;

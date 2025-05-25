@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\StudentApi;
 
 use App\Helpers\ErrorHandler;
 use App\Http\Controllers\Controller;
@@ -10,7 +10,6 @@ use App\Http\Requests\VerifyResetPasswordOtpRequest;
 use App\Mail\ResetPasswordOtp;
 use App\Models\Otp;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;

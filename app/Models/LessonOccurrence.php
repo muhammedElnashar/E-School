@@ -5,17 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class LessonRecurrence extends Model
+class LessonOccurrence extends Model
 {
     use HasFactory;
     protected $fillable = [
         'lesson_id',
-        'weeks_count',
-        'exception_dates',
+        'occurrence_date',
+        'zoom_link',
     ];
-    protected $casts = [
-        'exception_dates' => 'array',
-    ];
+
+    protected $dates = ['occurrence_date'];
 
     public function lesson()
     {

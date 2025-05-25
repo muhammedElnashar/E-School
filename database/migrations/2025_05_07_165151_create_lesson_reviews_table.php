@@ -17,9 +17,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('lesson_id')->constrained()->onDelete('cascade');
             $table->foreignId('student_id')->constrained('users')->onDelete('cascade');
-            $table->tinyInteger('rating'); // من 1 إلى 5
+            $table->tinyInteger('rating');
             $table->text('comment')->nullable();
             $table->timestamps();
+            $table->unique(['lesson_id', 'student_id']);
+
         });
     }
 
