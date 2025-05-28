@@ -5,6 +5,7 @@ use App\Http\Controllers\StudentApi\MarketplaceItemController;
 use App\Http\Controllers\StudentApi\ResetPassword;
 use App\Http\Controllers\TeacherApi\AuthController;
 use App\Http\Controllers\TeacherApi\LessonController;
+use App\Http\Controllers\TeacherApi\TeacherSubjectController;
 use App\Http\Controllers\TeacherApi\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,9 +20,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-/*Route::group(['middleware' => 'auth:sanctum'], function () {
-    Route::post('logout', [ApiController::class, 'logout']);
-});*/
 
 /**
  * STUDENT APIs
@@ -47,13 +45,17 @@ Route::group(['prefix' => 'student'], function () {
         // User
         Route::patch('update/user/profile', [\App\Http\Controllers\StudentApi\UserController::class, 'updateStudentProfile']);
         Route::delete('delete/user/profile', [\App\Http\Controllers\StudentApi\UserController::class, 'deleteStudentProfile']);
+        // User Info
+        Route::get('user/info/{id}', [\App\Http\Controllers\StudentApi\UserInfoController::class, 'getUserInfo']);
+        Route::get('user/data', [\App\Http\Controllers\StudentApi\UserInfoController::class, 'userCreditsGroupedByPackage']);
         //Marketplace Items
-
         Route::get('/packages', [MarketplaceItemController::class, 'getPackages']);
         Route::get('/digital-assets', [MarketplaceItemController::class, 'getDigitalAssets']);
         Route::get('/subjects', [MarketplaceItemController::class, 'getAllSubject']);
-
-
+        //Student List
+        Route::get('/lessons/list',[\App\Http\Controllers\StudentApi\LessonStudentsController::class,'list']);
+        Route::post('/assign/lesson',[\App\Http\Controllers\StudentApi\LessonStudentsController::class,'assign']);
+        Route::delete('/cancel/lesson/{id}',[\App\Http\Controllers\StudentApi\LessonStudentsController::class,'cancel']);
     });
 
 
@@ -68,7 +70,7 @@ Route::group(['prefix' => 'teacher'], function () {
         Route::post('/login', [AuthController::class, 'teacherLogin']);
     });
     //Authenticated APIs
-    Route::group(['middleware' => ['auth:sanctum', 'isTeacher']], function () {
+    Route::group(['middleware' => ['auth:sanctum','isTeacher']], function () {
         Route::post('teacher/logout', [AuthController::class, 'TeacherLogout']);
         // User
         Route::patch('update/teacher/profile', [UserController::class, 'updateTeacherProfile']);
@@ -76,6 +78,8 @@ Route::group(['prefix' => 'teacher'], function () {
         Route::post('/lesson', [LessonController::class, 'store']);
         Route::put('/lesson/{lesson}', [LessonController::class, 'update']);
         Route::delete('/lesson/{lesson}', [LessonController::class, 'destroy']);
+        Route::apiResource('teacher/subjects', TeacherSubjectController::class);
+        Route::middleware('auth:sanctum')->get('lesson/{lesson}/join', [LessonController::class, 'joinLesson']);
 
     });
 });

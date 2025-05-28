@@ -4,11 +4,13 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DigitalAssetController;
 use App\Http\Controllers\Admin\EducationStageController;
 use App\Http\Controllers\Admin\PackageController;
+use App\Http\Controllers\Admin\PurchasesController;
 use App\Http\Controllers\Admin\SubjectController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\SettingController;
+use Illuminate\Support\Facades\Session;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,7 +35,10 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::resource('marketplace-items/package', PackageController::class);
     Route::get('/subjects/{subject}/related-stages', [SubjectController::class, 'getRelatedStages']);
     Route::resource('marketplace-items/digital-assets', DigitalAssetController::class);
-
+    Route::get('/purchases',[PurchasesController::class,'index'])->name('purchases.index');
+    Route::get('/purchases/create',[PurchasesController::class,'create'])->name('purchases.create');
+    Route::post('/purchases',[PurchasesController::class,'store'])->name('purchases.store');
+    Route::delete('/purchases/{purchase}',[PurchasesController::class,'destroy'])->name('purchases.destroy');
     Route::get('/', [DashboardController::class, 'index']);
 
 

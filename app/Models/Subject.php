@@ -17,4 +17,8 @@ class Subject extends Model
     {
         return $this->hasMany(MarketplaceItem::class);
     }
+    public function teacherSubjects()
+    {
+        return $this->hasMany(TeacherSubject::class);
+    }
 }

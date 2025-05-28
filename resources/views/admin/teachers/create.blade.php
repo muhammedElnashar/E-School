@@ -24,7 +24,7 @@
 
                             <div class="form-group">
                                 <label>{{ __('Email') }}</label>
-                                <textarea name="email" class="form-control">{{ old('email') }}</textarea>
+                                <input type="text" name="email" class="form-control">{{ old('email') }}
                             </div>
 
                             <div class="form-group">

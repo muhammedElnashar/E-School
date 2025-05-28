@@ -1,7 +1,75 @@
 @extends('layouts.master')
 
 @section('title', __('Manage Subject Stages'))
+@section("css")
+    <style>
+        /* تنسيق الحاوية العامة */
+        .select2-container {
+            width: 100% !important;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 14px;
+        }
 
+        /* الشكل العام للـ Select */
+        .select2-container--default .select2-selection--multiple {
+            background-color: #f9f9f9;
+            border: 1px solid #dcdcdc;
+            border-radius: 8px;
+            padding: 8px 10px;
+            min-height: 44px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        /* شكل التحديد عند التركيز */
+        .select2-container--default.select2-container--focus .select2-selection--multiple {
+            border-color: #66afe9;
+            box-shadow: 0 0 0 3px rgba(102, 175, 233, 0.3);
+        }
+
+        /* النصوص داخل التحديد */
+        .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        /* شكل الـ tags */
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            background-color: #4e73df;
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            padding: 5px 12px;
+            font-size: 13px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* زر إزالة العنصر */
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+            margin-right: 6px;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* إخفاء السهم لأنه غير ضروري في multiple */
+        .select2-container--default .select2-selection--multiple .select2-selection__arrow {
+            display: none;
+        }
+
+        /* تحسين القائمة المنسدلة */
+        .select2-container--default .select2-results__option--highlighted[aria-selected] {
+            background-color: #4e73df;
+            color: white;
+        }
+
+        /* تحسين مظهر العناصر في القائمة */
+        .select2-container--default .select2-results > .select2-results__options {
+            max-height: 250px;
+            overflow-y: auto;
+        }
+    </style>
+@endsection
 @section('content')
     <div class="content-wrapper">
         <div class="page-header">
@@ -27,7 +95,8 @@
                         {{-- اختيار المراحل (select2 multiple) --}}
                         <div class="form-group mt-3">
                             <label>{{ __('Select Stages') }}</label>
-                            <select id="stages-select" class="form-control select2" multiple="multiple" disabled></select>
+                            <select id="stages-select" class="form-control select2" multiple="multiple"
+                                    disabled></select>
                         </div>
 
                         <button id="save-button" class="btn btn-primary mt-3" disabled>{{ __('Save') }}</button>
@@ -71,13 +140,13 @@
 @section('script')
 
     <!-- روابط Toastr CSS و JS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
 
-            $('#subject-select').on('change', function() {
+            $('#subject-select').on('change', function () {
                 let subjectId = $(this).val();
 
                 if (!subjectId) {
@@ -90,7 +159,7 @@
                 $('#stages-select').prop('disabled', false);
                 $('#save-button').prop('disabled', false);
 
-                $.get(`/admin/subjects/${subjectId}/stages`, function(data) {
+                $.get(`/admin/subjects/${subjectId}/stages`, function (data) {
                     $('#stages-select').empty();
 
                     data.allStages.forEach(stage => {
@@ -103,7 +172,7 @@
                 });
             });
 
-            $('#save-button').on('click', function() {
+            $('#save-button').on('click', function () {
                 let subjectId = $('#subject-select').val();
                 let selectedStages = $('#stages-select').val();
 
@@ -119,7 +188,7 @@
                         _token: '{{ csrf_token() }}',
                         stages: selectedStages
                     },
-                    success: function() {
+                    success: function () {
                         Swal.fire({
                             title: "{{ __('success') }}",
                             text: "{{ __('stages_updated_successfully') }}",
@@ -129,7 +198,7 @@
                             location.reload();
                         });
                     },
-                    error: function() {
+                    error: function () {
                         toastr.error('An error occurred while saving.');
                     }
                 });

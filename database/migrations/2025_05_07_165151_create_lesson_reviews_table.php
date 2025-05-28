@@ -21,7 +21,6 @@ return new class extends Migration
             $table->text('comment')->nullable();
             $table->timestamps();
             $table->unique(['lesson_id', 'student_id']);
-
         });
     }
 

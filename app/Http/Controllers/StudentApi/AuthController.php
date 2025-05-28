@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\StudentApi;
 
 
+use App\Enums\RoleEnum;
 use App\Helpers\ErrorHandler;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
@@ -27,7 +28,7 @@ class AuthController extends Controller
         try {
             $data =$request->all();
             $data['password'] = Hash::make($request->password);
-            $data['role']= 'student';
+            $data['role']= RoleEnum::Student->value;
             $data['user_code'] = Str::random(8);
             while (User::where('user_code', $data['user_code'])->exists()) {
                 $data['user_code'] = Str::random(8);
@@ -124,7 +125,7 @@ class AuthController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'user_code' => $userCode,
-                'role' => 'student',
+                'role' => RoleEnum::Student->value,
                 'email_verified_at' => now(),
                 'social_id' => $user->id,
                 'social_type' => 'google',

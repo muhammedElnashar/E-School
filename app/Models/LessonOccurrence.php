@@ -11,7 +11,6 @@ class LessonOccurrence extends Model
     protected $fillable = [
         'lesson_id',
         'occurrence_date',
-        'zoom_link',
     ];
 
     protected $dates = ['occurrence_date'];

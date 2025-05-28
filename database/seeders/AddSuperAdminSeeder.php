@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\RoleEnum;
 use App\Models\SessionYear;
 use App\Models\Settings;
 use App\Models\User;
@@ -23,7 +24,7 @@ class AddSuperAdminSeeder extends Seeder
             'name' => 'admin',
             'email' => 'superadmin@gmail.com',
             'user_code' => '12525',
-            'role' => 'admin',
+            'role' => RoleEnum::Admin->value,
             'password' => Hash::make('superadmin'),
             'image' => 'logo.svg',
         ]);

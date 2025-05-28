@@ -33,7 +33,7 @@
                             <tr>
                                 <td>{{ $item->id }}</td>
                                 <td>{{ $item->name }}</td>
-                                <td>{{ $item->package_scope }}</td>
+                                <td>{{ $item->package_scope->value }}</td>
                                 <td>{{ $item->price }}</td>
                                 <td>{{ $item->lecture_credits }}</td>
                                 <td>{{ $item->subject?->name  }}</td>
@@ -97,13 +97,12 @@
                                                            value="{{ old('lecture_credits', $item->lecture_credits) }}"
                                                            required>
                                                 </div>
-
                                                 <div class="form-group">
                                                     <label>{{ __('Package Scope') }} <span class="text-danger">*</span></label>
                                                     <select name="package_scope" class="form-control" required>
                                                         @foreach (\App\Enums\Scopes::cases() as $scope)
                                                             <option
-                                                                value="{{ $scope->value }}" {{ (old('package_scope', $item->package_scope) === $scope->value) ? 'selected' : '' }}>
+                                                                value="{{ $scope->value }}" {{ (old('package_scope', $item->package_scope->value ?? '') == $scope->value) ? 'selected' : '' }}>
                                                                 {{ __($scope->value) }}
                                                             </option>
                                                         @endforeach

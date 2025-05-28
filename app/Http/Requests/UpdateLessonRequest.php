@@ -33,9 +33,7 @@ class UpdateLessonRequest extends FormRequest
             'education_stage_id' => ['nullable', 'exists:education_stages,id'],
             'start_datetime' => ['required', 'date_format:Y-m-d H:i:s', 'before:end_datetime'],
             'end_datetime' => ['required', 'date_format:Y-m-d H:i:s', 'after:start_datetime'],
-            'zoom_link' => ['nullable', 'url'],
             'lesson_type' => ['required', Rule::in(array_column(Scopes::cases(), 'value'))],
-
             'recurrence.weeks_count' => ['required', 'integer', 'min:1'],
             'recurrence.exception_weeks' => ['nullable', 'array'],
             'recurrence.exception_weeks.*' => ['integer', 'min:1'],

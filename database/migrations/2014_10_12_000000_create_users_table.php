@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('image')->nullable();
-            $table->enum('role', ['student', 'teacher', 'admin']);
+            $table->string('role');
             $table->string('iban')->nullable();
             $table->string('social_id')->nullable();
             $table->string('social_type')->nullable();

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\RoleEnum;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -25,6 +26,7 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'role' => RoleEnum::class,
     ];
 
     public function lessons()
@@ -42,8 +44,12 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(LessonReview::class);
     }
 
-    public function isTeacher()
+    public function teacherSubjects()
     {
-        return $this->role === 'teacher';
+        return $this->hasMany(TeacherSubject::class, 'teacher_id');
+    }
+    public function purchases()
+    {
+        return $this->hasMany(Purchase::class);
     }
 }

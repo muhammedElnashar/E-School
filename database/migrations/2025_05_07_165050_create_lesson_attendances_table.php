@@ -19,7 +19,6 @@ return new class extends Migration
             $table->foreignId('student_id')->constrained('users')->onDelete('cascade');
             $table->boolean('attended')->default(false);
             $table->timestamps();
-
             $table->unique(['lesson_occurrence_id', 'student_id']);
         });
     }

@@ -80,8 +80,8 @@
 
                                                 <div class="form-group">
                                                     <label>{{ __('Email') }}</label>
-                                                    <textarea name="email" class="form-control"
-                                                              rows="2">{{ old('email', $item->email) }}</textarea>
+                                                    <input type="text" name="email" value="{{ old('email', $item->email) }}"
+                                                           class="form-control">
                                                 </div>
 
                                                 <div class="form-group">

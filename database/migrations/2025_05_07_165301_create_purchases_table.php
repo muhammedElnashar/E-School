@@ -17,8 +17,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // ربط الطالب
             $table->foreignId('marketplace_item_id')->constrained()->onDelete('cascade'); // ربط بالباكدج
-            $table->foreignId('education_stage_subject_id')->constrained()->onDelete('cascade');
-            $table->integer('remaining_credits')->default(0); // الحصص المتبق
+            $table->integer('remaining_credits')->default(0);
+            $table->decimal('price', 8, 2);
+            $table->string('status')->default('pending'); // pending, completed, failed
+            $table->string('stripe_payment_intent_id')->nullable();
+            $table->timestamp('activated_at')->nullable();
             $table->timestamps();
         });
     }

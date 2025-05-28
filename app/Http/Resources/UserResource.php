@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Enums\RoleEnum;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
@@ -21,9 +22,9 @@ class UserResource extends JsonResource
             'user_code' => $this->user_code,
             'image' => $this->image ? asset('storage/' . $this->image) : null,
             'role' => $this->role,
-
-//            'created_at' => $this->created_at,
-//            'updated_at' => $this->updated_at,
+            'iban' =>  RoleEnum::Teacher ? $this->iban:"",
+            "phone" => $this->phone,
+            'email_verified_at' => $this->email_verified_at ? $this->email_verified_at->toDateTimeString() : null,
         ];
     }
 }

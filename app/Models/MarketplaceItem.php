@@ -34,20 +34,15 @@ class MarketplaceItem extends Model
     {
         return $this->belongsTo(EducationStage::class);
     }
+    public function purchases()
+    {
+        return $this->hasMany(Purchase::class);
+    }
     protected $casts = [
         'type' => MarketplaceItemType::class,
         'package_scope' => Scopes::class,
 
     ];
-    public function isPackage(): bool
-    {
-        return $this->type === MarketplaceItemType::Package;
-    }
-
-    public function isDigitalAsset(): bool
-    {
-        return $this->type === MarketplaceItemType::DigitalAsset;
-    }
 
 
 }

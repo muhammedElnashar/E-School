@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\LessonType;
 use App\Enums\Scopes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,10 +11,13 @@ class Lesson extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['teacher_id', "subject_id","education_stage_id",'start_datetime', 'end_datetime', 'lesson_type',  'zoom_link',  'reschedules_count'];
-
+    protected $fillable = [
+        'teacher_id', 'subject_id', 'education_stage_id',
+        'start_datetime', 'end_datetime', 'lesson_type',
+        'agora_channel_name',
+    ];
     protected $casts = [
-        'lesson_type' => Scopes::class,
+        'lesson_type' => LessonType::class,
 
     ];
     public function teacher()

@@ -16,8 +16,8 @@ class PackageController extends Controller
     public function index()
     {
         $packages = MarketplaceItem::where('type', MarketplaceItemType::Package->value)
-            ->with(['subject', 'educationStage'])
-            ->paginate(15);
+            ->with(['subject', 'educationStage'])->latest()
+            ->paginate(5);
         $subjects = Subject::all();
         $educationStages = EducationStage::all();
 
@@ -102,6 +102,7 @@ class PackageController extends Controller
         if ($exists->exists()) {
             return back()->withErrors(['duplicate' => 'A package with the same subject, education stage, and scope already exists.'])->withInput();
         }
+
 
         $package->update($validated);
 

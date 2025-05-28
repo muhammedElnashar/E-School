@@ -13,13 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('lesson_recurrences', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('lesson_id')->constrained()->onDelete('cascade');
-            $table->integer('weeks_count');
-            $table->json('exception_dates')->nullable();
-            $table->timestamps();
-        });
+                Schema::create('lesson_recurrences', function (Blueprint $table) {
+                    $table->id();
+                    $table->foreignId('lesson_id')->constrained()->onDelete('cascade');
+                    $table->integer('weeks_count');
+                    $table->json('exception_dates')->nullable();
+                    $table->timestamps();
+                });
     }
 
     /**
