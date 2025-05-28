@@ -79,7 +79,12 @@ Route::group(['prefix' => 'teacher'], function () {
         Route::put('/lesson/{lesson}', [LessonController::class, 'update']);
         Route::delete('/lesson/{lesson}', [LessonController::class, 'destroy']);
         Route::apiResource('teacher/subjects', TeacherSubjectController::class);
-        Route::middleware('auth:sanctum')->get('lesson/{lesson}/join', [LessonController::class, 'joinLesson']);
+//        Route::middleware('auth:sanctum')->get('lesson/{lesson}/join', [LessonController::class, 'joinLesson']);
+        // Assignments
+        Route::get('/assignments', [\App\Http\Controllers\TeacherApi\AssignmentController::class, 'index']);
+        Route::post('/assignments', [\App\Http\Controllers\TeacherApi\AssignmentController::class, 'store']);
+        Route::put('/assignments/{assignment}', [\App\Http\Controllers\TeacherApi\AssignmentController::class, 'update']);
+        Route::delete('/assignments/{assignment}', [\App\Http\Controllers\TeacherApi\AssignmentController::class, 'destroy']);
 
     });
 });

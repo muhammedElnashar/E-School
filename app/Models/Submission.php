@@ -8,4 +8,22 @@ use Illuminate\Database\Eloquent\Model;
 class Submission extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'assignment_id',
+        'student_id',
+        'text',
+        'file_path',
+        'grade',
+        'teacher_note',
+    ];
+    public function assignment()
+    {
+        return $this->belongsTo(Assignment::class);
+    }
+
+    public function student()
+    {
+        return $this->belongsTo(User::class, 'student_id');
+    }
+
 }

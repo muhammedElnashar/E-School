@@ -21,8 +21,9 @@ class SubjectController extends Controller
             'name' => 'required|unique:subjects',
             'image'=>'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
         if ($request->hasFile('image')){
-            $path= $request->file('image')->store('images/subjects', 'public');
+            $path= $request->file('image')->store('images/subjects', 'images');
             $data['image'] = $path;
         }
 
@@ -53,7 +54,7 @@ class SubjectController extends Controller
         $subject = Subject::findOrFail($id);
         if ($request->hasFile('image')){
             if ($subject->image){
-                Storage::disk('public')->delete($subject->image);
+                Storage::disk('images')->delete($subject->image);
             }
             $path= $request->file('image')->store('images/subjects', 'public');
             $data['image'] = $path;
@@ -66,7 +67,7 @@ class SubjectController extends Controller
     {
        $subject= Subject::findOrFail($id);
         if ($subject->image){
-            Storage::disk('public')->delete($subject->image);
+            Storage::disk('images')->delete($subject->image);
         }
         $subject->delete();
         return redirect()->route('subjects.index')->with('success', 'Subject deleted successfully.');

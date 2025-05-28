@@ -22,6 +22,8 @@ return new class extends Migration
             $table->integer('grade')->nullable();
             $table->text('teacher_note')->nullable();
             $table->timestamps();
+            $table->unique(['assignment_id', 'student_id']);
+
         });
     }
 

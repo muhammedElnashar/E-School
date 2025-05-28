@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('assignments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('teacher_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('lesson_occurrence_id')->nullable()->constrained()->onDelete('cascade');
             $table->text('text')->nullable();
             $table->string('file_path')->nullable();
             $table->timestamps();
