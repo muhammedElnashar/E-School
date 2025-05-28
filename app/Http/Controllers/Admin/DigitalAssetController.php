@@ -44,7 +44,7 @@ class DigitalAssetController extends Controller
             'file' => 'required|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,csv|max:20480',
         ]);
 
-        $filePath = $request->file('file')->store('digital_assets', 'public');
+        $filePath = $request->file('file')->store('digital_assets', 'files');
         $validated['type'] = MarketplaceItemType::DigitalAsset->value;
         $validated['file_path'] = $filePath;
 
@@ -58,29 +58,28 @@ class DigitalAssetController extends Controller
        //
     }
 
-    public function update(Request $request, MarketplaceItem $asset)
+    public function update(Request $request, MarketplaceItem $digital_asset)
     {
-
-        $validated =   $request->validate([
+        $validated = $request->validate([
             'subject_id' => ['required', 'exists:subjects,id'],
             'education_stage_id' => ['nullable', 'exists:education_stages,id'],
             'name' => 'required|string|max:255',
             'file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,csv|max:20480', // 20MB max
             'price' => 'required|numeric|min:0',
         ]);
-
         $validated['type'] = MarketplaceItemType::DigitalAsset->value;
-
         if ($request->hasFile('file')) {
-            if ($asset->file_path && Storage::disk('public')->exists($asset->file_path)) {
-                Storage::disk('public')->delete($asset->file_path);
+            if ($digital_asset->file_path && Storage::disk('files')->exists($digital_asset->file_path)) {
+                Storage::disk('files')->delete($digital_asset->file_path);
             }
-            $file_path = $request->file('file')->store('digital_assets', 'public');
-
+            $file_path = $request->file('file')->store('digital_assets', 'files');
             $validated['file_path'] = $file_path;
         }
-        $asset->update($validated);
-        return redirect()->route('digital-assets.index')->with('success', __('Digital asset updated successfully.'));
+
+        $digital_asset->update($validated);
+
+        return redirect()->route('digital-assets.index')
+            ->with('success', __('Digital asset updated successfully.'));
     }
 
     public function destroy($id)
@@ -91,7 +90,7 @@ class DigitalAssetController extends Controller
         }
 
         if ($digitalAsset->file_path) {
-            Storage::disk('public')->delete($digitalAsset->file_path);
+            Storage::disk('files')->delete($digitalAsset->file_path);
         }
 
         $digitalAsset->delete();

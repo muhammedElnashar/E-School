@@ -23,7 +23,7 @@ class SubjectController extends Controller
         ]);
 
         if ($request->hasFile('image')){
-            $path= $request->file('image')->store('images/subjects', 'images');
+            $path= $request->file('image')->store('/subjects', 'images');
             $data['image'] = $path;
         }
 
@@ -40,7 +40,7 @@ class SubjectController extends Controller
         return response()->json([
             'id' => $subject->id,
             'name' => $subject->name,
-            'image_url' => asset('storage/' . $subject->image),
+            'image_url' => asset('images/' . $subject->image),
         ]);
     }
 
@@ -56,7 +56,7 @@ class SubjectController extends Controller
             if ($subject->image){
                 Storage::disk('images')->delete($subject->image);
             }
-            $path= $request->file('image')->store('images/subjects', 'public');
+            $path= $request->file('image')->store('/subjects', 'images');
             $data['image'] = $path;
         }
         $subject->update($data);

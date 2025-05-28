@@ -37,7 +37,7 @@
                                 <td>{{ $item->educationStage?->name  }}</td>
                                 <td>
                                     @if($item->file_path)
-                                        <a href="{{ asset('storage/' . $item->file_path) }}" target="_blank">{{ __('View File') }}</a>
+                                        <a href="{{ asset('files/' . $item->file_path) }}" target="_blank">{{ __('View File') }}</a>
                                     @else
                                         {{ __('No File') }}
                                     @endif
@@ -118,7 +118,7 @@
                                                     @if ($item->file_path)
                                                         <p class="mt-2">
                                                             {{ __('Current file:') }}
-                                                            <a href="{{ asset('storage/' . $item->file_path) }}" target="_blank">{{ basename($item->file_path) }}</a>
+                                                            <a href="{{ asset('files/' . $item->file_path) }}" target="_blank">{{ basename($item->file_path) }}</a>
                                                         </p>
                                                     @endif
                                                 </div>

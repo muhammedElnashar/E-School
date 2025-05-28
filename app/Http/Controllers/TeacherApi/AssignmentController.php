@@ -26,7 +26,7 @@ class AssignmentController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      */
-/*    public function store(StoreAssignmentRequest $request)
+    public function store(StoreAssignmentRequest $request)
     {
         $teacher = auth()->user();
         $data = $request->validated();
@@ -61,8 +61,8 @@ class AssignmentController extends Controller
 
         AssignmentStudent::insert($assignmentStudents->toArray());
 
-        return response()->json(['message' => 'تم إنشاء الواجب وإرساله بنجاح.']);
-    }*/
+        return response()->json(['message' => 'Assignment Created Successfully.']);
+    }
     /**
      * Display the specified resource.
      *

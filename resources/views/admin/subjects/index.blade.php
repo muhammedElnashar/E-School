@@ -50,7 +50,7 @@
                                 <tr>
                                     <td>{{ $subject->id }}</td>
                                     <td>{{ $subject->name }}</td>
-                                    <td><img src="{{asset('storage/'.$subject->image)}}" alt=""></td>
+                                    <td><img src="{{asset('images/'.$subject->image)}}" alt=""></td>
                                     <td class="d-flex">
                                         <button
                                             class="btn btn-warning btn-sm mr-2 btn-edit"
