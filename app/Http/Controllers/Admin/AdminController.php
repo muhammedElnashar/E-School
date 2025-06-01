@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\RoleEnum;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreTeacherRequest;
-use App\Http\Requests\UpdateTeacherRequest;
+use App\Http\Requests\StoreAdminRequest;
+use App\Http\Requests\UpdateAdminRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
-class TeacherController extends Controller
+class AdminController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,8 +18,9 @@ class TeacherController extends Controller
      */
     public function index()
     {
-        $teachers = User::where('role', 'teacher')->paginate(5);
-        return view('admin.teachers.index', compact('teachers'));
+        $admins = \App\Models\User::whereIn('role', [RoleEnum::Admin->value, RoleEnum::SuperAdmin->value])
+            ->paginate(5);
+        return view('admin.admins.index', compact('admins'));
     }
 
     /**
@@ -28,7 +29,7 @@ class TeacherController extends Controller
      */
     public function create()
     {
-        return view('admin.teachers.create');
+        return view('admin.admins.create');
     }
 
     /**
@@ -36,7 +37,7 @@ class TeacherController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      */
-    public function store(StoreTeacherRequest $request)
+    public function store(StoreAdminRequest $request)
     {
         $data = $request->validated();
         $data['password'] = Hash::make($data['password']);
@@ -44,10 +45,9 @@ class TeacherController extends Controller
         while (User::where('user_code', $data['user_code'])->exists()) {
             $data['user_code'] = random_int(1000000, 9999999);
         }
-        $data['role'] = 'teacher';
-        $data['email_verified_at'] = now();
         User::create($data);
-        return redirect()->route('teacher.index')->with('success', 'Teacher created successfully.');
+
+        return redirect()->route('admin.index')->with('success', 'Admin created successfully.');
     }
 
     /**
@@ -78,18 +78,19 @@ class TeacherController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      */
-    public function update(UpdateTeacherRequest $request, $id)
+    public function update(UpdateAdminRequest $request, User $admin)
     {
-        $teacher = User::findOrFail($id);
-
-        $teacher->name = $request->input('name');
-        $teacher->email = $request->input('email');
-
-        if ($request->filled('password')) {
-            $teacher->password = Hash::make($request->input('password'));
+        $data = $request->validated();
+        if (isset($data['password']) && !empty($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        } else {
+            unset($data['password']);
         }
-        $teacher->save();
-        return redirect()->route('teacher.index')->with('success', 'تم تحديث بيانات المعلم بنجاح');
+
+        $admin->update($data);
+        return redirect()->route('admin.index')->with('success', 'Admin updated successfully.');
+
+
     }
 
     /**
@@ -99,8 +100,11 @@ class TeacherController extends Controller
      */
     public function destroy($id)
     {
-        $teacher = User::findOrFail($id);
-        $teacher->delete();
-        return redirect()->route('teacher.index')->with('success', 'تم حذف المعلم بنجاح');
+        $admin = User::findOrFail($id);
+        if ($admin->role->value === RoleEnum::SuperAdmin->value) {
+            return redirect()->route('admin.index')->withErrors( 'Cannot delete Super Admin.');
+        }
+        $admin->delete();
+        return redirect()->route('admin.index')->with('success', 'Admin deleted successfully.');
     }
 }

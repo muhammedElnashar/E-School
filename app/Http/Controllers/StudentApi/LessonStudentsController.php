@@ -42,7 +42,7 @@ class LessonStudentsController extends Controller
 
         $lesson = $lessonOccurrence->lesson;
         $sub_id = $lesson->subject->id;
-        $edu_id = $lesson->educationStage->id;
+        $edu_id = $lesson->educationStage->id?? null;
 
         $purchased = $user->purchases()
             ->whereHas('marketplaceItem', function ($q) use ($sub_id, $edu_id) {

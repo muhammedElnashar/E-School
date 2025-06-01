@@ -117,7 +117,6 @@
     </div>
 @endsection
 
-@section('script')
     <!-- Select2 core CSS -->
     @section('script')
         <script>
@@ -143,4 +142,3 @@
         </script>
     @endsection
 
-@endsection

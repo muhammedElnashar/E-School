@@ -24,13 +24,20 @@ use Illuminate\Support\Facades\Session;
 */
 Auth::routes();
 
+Route::get('/', function () {
+    return redirect('/admin');
+});
+
 Route::prefix('admin')->middleware('auth')->group(function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/subjects/stages-management', [SubjectController::class, 'stagesManagement'])->name('subjects.stages.management');
     Route::get('/subjects/{subject}/stages', [SubjectController::class, 'getStages']);
     Route::post('/subjects/{subject}/stages/sync', [SubjectController::class, 'syncStages']);
     Route::resource('subjects', SubjectController::class);
     Route::resource('education/stages', EducationStageController::class);
     Route::resource('teacher', \App\Http\Controllers\Admin\TeacherController::class);
+    Route::resource('admin', \App\Http\Controllers\Admin\AdminController::class);
+    Route::resource('announcements', \App\Http\Controllers\Admin\AnnouncementController::class);
 
     Route::resource('marketplace-items/package', PackageController::class);
     Route::get('/subjects/{subject}/related-stages', [SubjectController::class, 'getRelatedStages']);
@@ -39,7 +46,6 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/purchases/create',[PurchasesController::class,'create'])->name('purchases.create');
     Route::post('/purchases',[PurchasesController::class,'store'])->name('purchases.store');
     Route::delete('/purchases/{purchase}',[PurchasesController::class,'destroy'])->name('purchases.destroy');
-    Route::get('/', [DashboardController::class, 'index']);
 
 
 });

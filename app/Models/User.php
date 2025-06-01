@@ -17,6 +17,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     protected $fillable = [
         'name', 'email', 'password', 'role', 'iban', 'user_code', 'image',
+        'phone',
         'email_verified_at',
         'social_id',
         'social_type',
@@ -52,4 +53,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Purchase::class);
     }
+    public function submissions()
+    {
+        return $this->hasMany(Submission::class, 'student_id');
+    }
+
 }

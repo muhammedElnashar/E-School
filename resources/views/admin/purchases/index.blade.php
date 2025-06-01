@@ -68,7 +68,7 @@
                     const form = this.closest('form');
                     Swal.fire({
                         title: '{{ __("Delete Confirmation") }}',
-                        text: '{{ __("Are you sure you want to delete this digital asset?") }}',
+                        text: '{{ __("Are you sure you want to delete this Record?") }}',
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonText: '{{ __("Yes, delete it!") }}',

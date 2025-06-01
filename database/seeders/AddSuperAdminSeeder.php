@@ -24,7 +24,7 @@ class AddSuperAdminSeeder extends Seeder
             'name' => 'admin',
             'email' => 'superadmin@gmail.com',
             'user_code' => '12525',
-            'role' => RoleEnum::Admin->value,
+            'role' => RoleEnum::SuperAdmin->value,
             'password' => Hash::make('superadmin'),
             'image' => 'logo.svg',
         ]);

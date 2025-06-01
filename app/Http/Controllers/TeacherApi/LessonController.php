@@ -6,6 +6,7 @@ use App\Helpers\ErrorHandler;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreLessonRequest;
 use App\Http\Requests\UpdateLessonRequest;
+use App\Http\Resources\LessonResource;
 use App\Models\Lesson;
 use App\Models\LessonOccurrence;
 use App\Models\LessonRecurrence;
@@ -16,6 +17,26 @@ use Illuminate\Support\Facades\DB;
 
 class LessonController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     *
+     */
+    public function index()
+    {
+        $lessons = Lesson::where('teacher_id', auth()->id())
+            ->with(['recurrence', 'occurrences'])
+            ->get();
+        if ($lessons->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No lessons found.',
+            ], 404);
+        }
+        return response()->json([
+            'success' => true,
+            'lessons' =>  $lessons,
+        ]);
+    }
     public function store(StoreLessonRequest $request)
     {
         DB::beginTransaction();

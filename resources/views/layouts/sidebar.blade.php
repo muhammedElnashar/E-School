@@ -11,7 +11,7 @@
         <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#academics-menu" aria-expanded="false"
                aria-controls="academics-menu">
-                <i class="fa fa-university menu-icon"></i><span class="menu-title">{{ __('Subjects') }}</span>
+                <i class="fa fa-book menu-icon"></i><span class="menu-title">{{ __('Subjects') }}</span>
                 <i class="fa fa-angle-left fa-2xl menu-arrow"></i>
             </a>
             <div class="collapse" id="academics-menu">
@@ -59,7 +59,7 @@
         <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#teacher-menu" aria-expanded="false"
                aria-controls="teacher-menu">
-                <i class="fa fa-university menu-icon"></i><span class="menu-title">{{ __('Teachers') }}</span>
+                <i class="fa fa-university menu-icon"></i><span class="menu-title">{{ __('Users') }}</span>
                 <i class="fa fa-angle-left fa-2xl menu-arrow"></i>
             </a>
             <div class="collapse" id="teacher-menu">
@@ -67,11 +67,41 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{route("teacher.index")}}"> {{ __(' Teacher List') }} </a>
                         </li>
+                    <li class="nav-item">
+                            <a class="nav-link" href="{{route("admin.index")}}"> {{ __(' Admin List') }} </a>
+                        </li>
 
                 </ul>
             </div>
         </li>
-
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#payment-menu" aria-expanded="false"
+               aria-controls="payment-menu">
+                <i class="fa fa-university menu-icon"></i><span class="menu-title">{{ __('Purchases') }}</span>
+                <i class="fa fa-angle-left fa-2xl menu-arrow"></i>
+            </a>
+            <div class="collapse" id="payment-menu">
+                <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{route("purchases.index")}}"> {{ __(' Purchases List') }} </a>
+                        </li>
+                </ul>
+            </div>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#announcement-menu" aria-expanded="false"
+               aria-controls="announcement-menu">
+                <i class="fa fa-book menu-icon"></i><span class="menu-title">{{ __('Announcements') }}</span>
+                <i class="fa fa-angle-left fa-2xl menu-arrow"></i>
+            </a>
+            <div class="collapse" id="announcement-menu">
+                <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{route("announcements.index")}}"> {{ __(' Announcements List') }} </a>
+                        </li>
+                </ul>
+            </div>
+        </li>
 
         {{--        @hasrole('Super Admin')--}}
         {{--            --}}{{-- academics --}}

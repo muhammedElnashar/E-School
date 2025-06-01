@@ -1,49 +1,45 @@
 @extends('layouts.master')
 
 @section('title')
-    {{ __('Teachers') }}
+    {{ __('Announcement') }}
 @endsection
 
 @section('content')
     <div class="content-wrapper">
         <div class="page-header d-flex justify-content-between align-items-center">
-            <h3 class="page-title">{{ __('Manage Teacher') }}</h3>
-            <a href="{{ route('teacher.create') }}" class="btn btn-primary">{{ __('Create Teacher') }}</a>
+            <h3 class="page-title">{{ __('Manage Announcement') }}</h3>
+            <a href="{{ route('announcements.create') }}" class="btn btn-primary">{{ __('Create Announcement') }}</a>
         </div>
 
         <div class="card shadow-sm">
             <div class="card-body">
-                <h4 class="card-title">{{ __('Teacher List') }}</h4>
+                <h4 class="card-title">{{ __('Announcement List') }}</h4>
                 <div class="table-responsive">
                     <table class="table table-bordered table-striped text-center">
                         <thead>
                         <tr>
                             <th>#</th>
-                            <th>{{ __('User Code') }}</th>
-                            <th>{{ __('Name') }}</th>
-                            <th>{{ __('Email') }}</th>
-                            <th>{{ __('Iban') }}</th>
+                            <th>{{ __('Title') }}</th>
+                            <th>{{ __('Content') }}</th>
                             <th>{{ __('Image') }}</th>
                             <th>{{ __('Action') }}</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @forelse ($teachers as $item)
+                        @forelse ($announcements as $item)
                             <tr>
                                 <td>{{ $item->id }}</td>
-                                <td>{{ $item->user_code }}</td>
-                                <td>{{ $item->name }}</td>
-                                <td>{{ $item->email }}</td>
-                                <td>{{ $item->iban }}</td>
-                                <td>@if($item->image)
-                                        <img src="{{asset("storage/". $item->image) }}">
-                                @endif</td>
+                                <td>{{ $item->title }}</td>
+                                <td>{{ $item->content }}</td>
+                                <td>
+                                    <img src="{{asset("images/".$item->image) }}">
+                                </td>
                                 <td>
                                     <button type="button" class="btn btn-sm btn-warning" data-toggle="modal"
                                             data-target="#editModal-{{ $item->id }}">
                                         {{ __('Edit') }}
                                     </button>
-                                    <form action="{{ route('teacher.destroy', $item->id) }}" method="POST"
+                                    <form action="{{ route('announcements.destroy', $item->id) }}" method="POST"
                                           class="d-inline">
                                         @csrf
                                         @method('DELETE')
@@ -57,14 +53,14 @@
                             <div class="modal fade" id="editModal-{{ $item->id }}" tabindex="-1" role="dialog"
                                  aria-labelledby="editModalLabel-{{ $item->id }}" aria-hidden="true">
                                 <div class="modal-dialog modal-md" role="document">
-                                    <form action="{{ route('teacher.update', $item->id) }}" method="POST"
+                                    <form action="{{ route('announcements.update', $item->id) }}" method="POST"
                                           enctype="multipart/form-data" class="w-100">
                                         @csrf
                                         @method('PUT')
                                         <div class="modal-content">
                                             <div class="modal-header bg-primary text-white">
-                                                <h5 class="modal-title">{{ __('Edit Teacher') }}
-                                                    - {{ $item->name }}</h5>
+                                                <h5 class="modal-title">{{ __('Edit Announcement') }}
+                                                    - {{ $item->title }}</h5>
                                                 <button type="button" class="close text-white" data-dismiss="modal"
                                                         aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
@@ -73,22 +69,27 @@
 
                                             <div class="modal-body">
                                                 <div class="form-group">
-                                                    <label>{{ __('Name') }} <span class="text-danger">*</span></label>
-                                                    <input type="text" name="name" class="form-control"
-                                                           value="{{ old('name', $item->name) }}" required>
+                                                    <label>{{ __('Title') }} <span class="text-danger">*</span></label>
+                                                    <input type="text" name="title" class="form-control"
+                                                           value="{{ old('title', $item->title) }}" required>
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label>{{ __('Email') }}</label>
-                                                    <input type="text" name="email" value="{{ old('email', $item->email) }}"
+                                                    <label>{{ __('Content') }}</label>
+                                                    <textarea  name="content"
+                                                           class="form-control">{{ old('content', $item->content) }}
+                                                    </textarea>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>{{ __('Image') }}</label>
+                                                    <input type="file" name="image"
                                                            class="form-control">
+                                                    @if($item->image)
+                                                        <img src="{{ asset('images/' . $item->image) }}" alt="Image"
+                                                             class="img-thumbnail mt-2" style="max-width: 150px;">
+                                                    @endif
                                                 </div>
-
-                                                <div class="form-group">
-                                                    <label>{{ __('Password') }} <span class="text-danger">*</span></label>
-                                                    <input type="password"  name="password" class="form-control" required>
-                                                </div>
-
 
 
                                                 <div class="modal-footer">
@@ -111,7 +112,7 @@
                         </tbody>
                     </table>
 
-                    {{ $teachers->links() }}
+                    {{ $announcements->links() }}
                 </div>
             </div>
         </div>
@@ -120,6 +121,7 @@
 
 @section('script')
     <script>
+
         document.addEventListener("DOMContentLoaded", function () {
             document.querySelectorAll('.deleted-btn').forEach(function (btn) {
                 btn.addEventListener('click', function (e) {
@@ -141,4 +143,6 @@
             });
         });
     </script>
+
+
 @endsection

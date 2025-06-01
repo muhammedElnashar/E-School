@@ -29,9 +29,9 @@ class AuthController extends Controller
             $data =$request->all();
             $data['password'] = Hash::make($request->password);
             $data['role']= RoleEnum::Student->value;
-            $data['user_code'] = Str::random(8);
+            $data["user_code"] = random_int(1000000, 9999999);
             while (User::where('user_code', $data['user_code'])->exists()) {
-                $data['user_code'] = Str::random(8);
+                $data['user_code'] = random_int(1000000, 9999999);
             }
             $user = User::create($data);
             $otp = random_int(100000, 999999);
@@ -115,9 +115,9 @@ class AuthController extends Controller
                 return response()->json(['error' => 'Email already registered'], 400);
             }
 
-            $userCode = Str::random(8);
+            $userCode = random_int(1000000, 9999999);
             while (User::where('user_code', $userCode)->exists()) {
-                $userCode = Str::random(8);
+                $userCode = random_int(1000000, 9999999);
             }
 
 

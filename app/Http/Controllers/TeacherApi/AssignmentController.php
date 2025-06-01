@@ -4,21 +4,30 @@ namespace App\Http\Controllers\TeacherApi;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreAssignmentRequest;
+use App\Http\Requests\UpdateAssignmentRequest;
 use App\Models\Assignment;
 use App\Models\AssignmentStudent;
 use App\Models\LessonStudent;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AssignmentController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        //
+        $teacher = auth()->user();
+        $assignments = Assignment::where('teacher_id', $teacher->id)
+            ->get();
+
+        if ($assignments->isEmpty()) {
+            return response()->json(['message' => 'No Assignments Found.'], 404);
+        }
+
+        return response()->json($assignments);
     }
 
     /**
@@ -31,18 +40,16 @@ class AssignmentController extends Controller
         $teacher = auth()->user();
         $data = $request->validated();
 
-        // جلب الطلاب المسجلين في الحصة
         $studentIds = LessonStudent::where('lesson_occurrence_id', $data['lesson_occurrence_id'])
             ->pluck('student_id');
 
         if ($studentIds->isEmpty()) {
-            return response()->json(['message' => 'لا يوجد طلاب مسجلين في هذه الحصة.'], 400);
+            return response()->json(['message' => ' No Student Assign To This Lesson .'], 400);
         }
 
-        // تحميل الملف إذا وجد
         $filePath = null;
         if ($request->hasFile('file')) {
-            $filePath = $request->file('file')->store("assignments/lesson_{$data['lesson_occurrence_id']}", 'public');
+            $filePath = $request->file('file')->store("assignments", 'files');
         }
 
         $assignment = Assignment::create([
@@ -79,21 +86,56 @@ class AssignmentController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateAssignmentRequest $request, Assignment $assignment)
     {
-        //
+        $teacher = auth()->user();
+
+        if ($assignment->teacher_id !== $teacher->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $data = $request->validated();
+
+        if ($request->hasFile('file')) {
+            if ($assignment->file_path && Storage::disk('files')->exists($assignment->file_path)) {
+                Storage::disk('files')->delete($assignment->file_path);
+            }
+
+            $data['file_path'] = $request->file('file')->store("assignments", 'files');
+        }
+
+        $assignment->update([
+            'text' => $data['text'] ?? $assignment->text,
+            'file_path' => $data['file_path'] ?? $assignment->file_path,
+        ]);
+
+        return response()->json(['message' => 'Assignment Updated Successfully.']);
     }
+
 
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Assignment $assignment)
     {
-        //
+        $teacher = auth()->user();
+
+        if ($assignment->teacher_id !== $teacher->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        if ($assignment->file_path && Storage::disk('files')->exists($assignment->file_path)) {
+            Storage::disk('files')->delete($assignment->file_path);
+        }
+
+        $assignment->delete();
+
+        return response()->json(['message' => 'Assignment Deleted Successfully.']);
     }
+
+
+
 }

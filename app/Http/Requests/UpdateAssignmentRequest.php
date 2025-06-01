@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreAssignmentRequest extends FormRequest
+class UpdateAssignmentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +24,9 @@ class StoreAssignmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'lesson_occurrence_id' => 'required|exists:lesson_occurrences,id',
-            'text' => 'required|string',
+            'text' => 'nullable|string',
             'file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,csv,jpg,jpeg,png,webp|max:10240',
         ];
     }
+
 }

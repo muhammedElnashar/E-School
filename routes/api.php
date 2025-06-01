@@ -3,6 +3,7 @@
 use App\Http\Controllers\StudentApi\EmailVerify;
 use App\Http\Controllers\StudentApi\MarketplaceItemController;
 use App\Http\Controllers\StudentApi\ResetPassword;
+use App\Http\Controllers\StudentApi\SubmissionController;
 use App\Http\Controllers\TeacherApi\AuthController;
 use App\Http\Controllers\TeacherApi\LessonController;
 use App\Http\Controllers\TeacherApi\TeacherSubjectController;
@@ -56,6 +57,8 @@ Route::group(['prefix' => 'student'], function () {
         Route::get('/lessons/list',[\App\Http\Controllers\StudentApi\LessonStudentsController::class,'list']);
         Route::post('/assign/lesson',[\App\Http\Controllers\StudentApi\LessonStudentsController::class,'assign']);
         Route::delete('/cancel/lesson/{id}',[\App\Http\Controllers\StudentApi\LessonStudentsController::class,'cancel']);
+        Route::post('/submission', [SubmissionController::class, 'store']);
+
     });
 
 
@@ -75,6 +78,7 @@ Route::group(['prefix' => 'teacher'], function () {
         // User
         Route::patch('update/teacher/profile', [UserController::class, 'updateTeacherProfile']);
         //Lessons
+        Route::get('/lesson', [LessonController::class, 'index']);
         Route::post('/lesson', [LessonController::class, 'store']);
         Route::put('/lesson/{lesson}', [LessonController::class, 'update']);
         Route::delete('/lesson/{lesson}', [LessonController::class, 'destroy']);
@@ -83,8 +87,11 @@ Route::group(['prefix' => 'teacher'], function () {
         // Assignments
         Route::get('/assignments', [\App\Http\Controllers\TeacherApi\AssignmentController::class, 'index']);
         Route::post('/assignments', [\App\Http\Controllers\TeacherApi\AssignmentController::class, 'store']);
+        Route::get('/assignments/{assignment}', [\App\Http\Controllers\TeacherApi\AssignmentController::class, 'show']);
         Route::put('/assignments/{assignment}', [\App\Http\Controllers\TeacherApi\AssignmentController::class, 'update']);
         Route::delete('/assignments/{assignment}', [\App\Http\Controllers\TeacherApi\AssignmentController::class, 'destroy']);
+        Route::get('/assignments/{assignment}/submissions', [\App\Http\Controllers\TeacherApi\SubmissionController::class, 'showAssignmentWithSubmissions']);
+        Route::put('/submissions/{submission}', [\App\Http\Controllers\TeacherApi\SubmissionController::class, 'updateSubmission']);
 
     });
 });
