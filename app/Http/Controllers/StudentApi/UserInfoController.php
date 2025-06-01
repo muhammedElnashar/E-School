@@ -4,6 +4,7 @@ namespace App\Http\Controllers\StudentApi;
 
 use App\Enums\RoleEnum;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\StudentResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 
@@ -11,13 +12,15 @@ class UserInfoController extends Controller
 {
     public function getUserInfo($id)
     {
-        $user=User::whereNot('role',RoleEnum::Admin)->find($id);
+        $user = User::whereNotIn('role', [RoleEnum::Admin, RoleEnum::SuperAdmin])
+            ->where('id', $id)
+            ->first();
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
         return response()->json([
             'status' => 'success',
-           "data"=> new UserResource($user),
+           "data"=> new StudentResource($user),
         ]);
     }
     public function userCreditsGroupedByPackage()

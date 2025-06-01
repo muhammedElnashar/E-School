@@ -6,6 +6,7 @@ use App\Helpers\ErrorHandler;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DeleteUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Resources\StudentResource;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -36,7 +37,7 @@ class UserController extends Controller
             $user->save();
             return response()->json([
                 'message' => 'Profile updated successfully',
-                'data' => new UserResource($user),
+                'data' => new StudentResource($user),
             ],200);
         }catch (\Throwable $e){
             return ErrorHandler::handle($e);
