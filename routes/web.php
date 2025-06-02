@@ -38,14 +38,17 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::resource('teacher', \App\Http\Controllers\Admin\TeacherController::class);
     Route::resource('admin', \App\Http\Controllers\Admin\AdminController::class);
     Route::resource('announcements', \App\Http\Controllers\Admin\AnnouncementController::class);
-
     Route::resource('marketplace-items/package', PackageController::class);
     Route::get('/subjects/{subject}/related-stages', [SubjectController::class, 'getRelatedStages']);
     Route::resource('marketplace-items/digital-assets', DigitalAssetController::class);
-    Route::get('/purchases',[PurchasesController::class,'index'])->name('purchases.index');
-    Route::get('/purchases/create',[PurchasesController::class,'create'])->name('purchases.create');
-    Route::post('/purchases',[PurchasesController::class,'store'])->name('purchases.store');
-    Route::delete('/purchases/{purchase}',[PurchasesController::class,'destroy'])->name('purchases.destroy');
+    Route::get('/purchases', [PurchasesController::class, 'index'])->name('purchases.index');
+    Route::get('/purchases/create', [PurchasesController::class, 'create'])->name('purchases.create');
+    Route::post('/purchases', [PurchasesController::class, 'store'])->name('purchases.store');
+    Route::delete('/purchases/{purchase}', [PurchasesController::class, 'destroy'])->name('purchases.destroy');
+    Route::get("all-assignment", [App\Http\Controllers\Admin\AssignmentsController::class, 'allAssignment'])->name('assignment.all');
+    Route::get("all-submission/{id}", [App\Http\Controllers\Admin\AssignmentsController::class, 'getAllSubmissionsForAssignments'])->name('submission.all');
+    Route::delete("destroy-assignment/{id}", [App\Http\Controllers\Admin\AssignmentsController::class, 'destroyAssignment'])->name('assignment.destroy');
+    Route::delete("destroy-submission/{id}", [App\Http\Controllers\Admin\AssignmentsController::class, 'destroySubmission'])->name('submission.destroy');
 
 
 });

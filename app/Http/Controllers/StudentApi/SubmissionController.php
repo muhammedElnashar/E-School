@@ -12,6 +12,7 @@ class SubmissionController extends Controller
 {
     public function store(StoreSubmissionRequest $request)
     {
+
         $student = auth()->user();
         $data = $request->validated();
 
@@ -47,4 +48,6 @@ class SubmissionController extends Controller
 
         return response()->json(['message' => 'Submission created successfully.']);
     }
+
+
 }

@@ -102,6 +102,20 @@
                 </ul>
             </div>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#assignment-menu" aria-expanded="false"
+               aria-controls="assignment-menu">
+                <i class="fa fa-star-o menu-icon"></i><span class="menu-title">{{ __('Assignments') }}</span>
+                <i class="fa fa-angle-left fa-2xl menu-arrow"></i>
+            </a>
+            <div class="collapse" id="assignment-menu">
+                <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{route("assignment.all")}}"> {{ __(' Assignments List') }} </a>
+                        </li>
+                </ul>
+            </div>
+        </li>
 
         {{--        @hasrole('Super Admin')--}}
         {{--            --}}{{-- academics --}}

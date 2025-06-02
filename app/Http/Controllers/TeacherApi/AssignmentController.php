@@ -130,7 +130,11 @@ class AssignmentController extends Controller
         if ($assignment->file_path && Storage::disk('files')->exists($assignment->file_path)) {
             Storage::disk('files')->delete($assignment->file_path);
         }
-
+        foreach ($assignment->submissions as $submission) {
+            if ($submission->file_path && Storage::disk('files')->exists($submission->file_path)) {
+                Storage::disk('files')->delete($submission->file_path);
+            }
+        }
         $assignment->delete();
 
         return response()->json(['message' => 'Assignment Deleted Successfully.']);

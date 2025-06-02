@@ -58,6 +58,7 @@ Route::group(['prefix' => 'student'], function () {
         Route::post('/assign/lesson',[\App\Http\Controllers\StudentApi\LessonStudentsController::class,'assign']);
         Route::delete('/cancel/lesson/{id}',[\App\Http\Controllers\StudentApi\LessonStudentsController::class,'cancel']);
         Route::post('/submission', [SubmissionController::class, 'store']);
+        Route::get("announcements",[\App\Http\Controllers\StudentApi\Announcement::class, 'index']);
 
     });
 
