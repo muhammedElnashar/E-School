@@ -4,12 +4,28 @@ namespace App\Http\Controllers\StudentApi;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSubmissionRequest;
+use App\Http\Resources\AssignmentsResource;
+use App\Http\Resources\SubmissionsResource;
 use App\Models\Assignment;
 use App\Models\Submission;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class SubmissionController extends Controller
 {
+    public function getAllAssignments()
+    {
+        $student = auth()->user();
+        $assignments = Assignment::whereHas('occurrence.students', function ($query) use ($student) {
+            $query->where('student_id', $student->id);
+        })->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => AssignmentsResource::collection($assignments)
+        ]);
+
+    }
     public function store(StoreSubmissionRequest $request)
     {
 
@@ -48,6 +64,31 @@ class SubmissionController extends Controller
 
         return response()->json(['message' => 'Submission created successfully.']);
     }
+    public function AllStudentSubmissions()
+    {
+        $student = auth()->user();
+        $submissions = Submission::where('student_id', $student->id)->get();
+        return response()->json([
+            'status' => 'success',
+            'data'=> SubmissionsResource::collection($submissions)
+        ]);
+    }
 
+    public function destroy($id)
+    {
+        $student = auth()->user();
+        $submission = Submission::where('student_id', $student->id)
+            ->where('id', $id)
+            ->first();
+        if (! $submission) {
+            return response()->json(['message' => 'Submission not found.'], 404);
+        }
 
+        if ($submission->file_path && Storage::disk('files')->exists($submission->file_path)) {
+            Storage::disk('files')->delete($submission->file_path);
+        }
+        $submission->delete();
+
+        return response()->json(['message' => 'Submission deleted successfully.']);
+    }
 }

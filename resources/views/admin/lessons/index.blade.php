@@ -1,55 +1,68 @@
 @extends('layouts.master')
 
 @section('title')
-    {{ __('Purchases') }}
+    {{ __('Lessons') }}
 @endsection
 
 @section('content')
     <div class="content-wrapper">
         <div class="page-header d-flex justify-content-between align-items-center">
-            <h3 class="page-title">{{ __('Purchases') }}</h3>
-            <a href="{{ route('purchases.create') }}" class="btn btn-primary">{{ __('Manual Purchases') }}</a>
+            <h3 class="page-title">{{ __('Manage Lesson') }}</h3>
+            <a href="{{ route('lessons.create') }}" class="btn btn-primary">{{ __('Create Lesson') }}</a>
         </div>
 
         <div class="card shadow-sm">
             <div class="card-body">
-                    <h4 class="card-title">{{ __('Manual Purchase List') }}</h4>
+                <h4 class="card-title">{{ __('Lesson List') }}</h4>
                 <div class="table-responsive">
                     <table class="table table-bordered table-striped text-center">
                         <thead>
                         <tr>
                             <th>#</th>
-                            <th>{{ __('Username') }}</th>
-                            <th>{{ __('Marketplace Item') }}</th>
-                            <th>{{ __(' price') }}</th>
-                            <th>{{ __('Remaining Credits') }}</th>
+                            <th>{{ __('Teacher') }}</th>
+                            <th>{{ __('Subject') }}</th>
+                            <th>{{ __("Stage") }}</th>
+                            <th>{{ __('Start Date') }}</th>
+                            <th>{{ __(' End Date') }}</th>
+                            <th>{{ __('Lesson Type') }}</th>
                             <th>{{ __('Action') }}</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @forelse ($purchases as $item)
+                        @forelse ($lessons as $item)
                             <tr>
                                 <td>{{ $item->id }}</td>
-                                <td>{{ $item->user->name }}</td>
-                                <td>{{ $item->marketplaceItem->name}} - {{ $item->marketplaceItem-> package_scope}} </td>
-                                <td>{{ $item->price }}</td>
-                                <td>{{ $item->remaining_credits }}</td>
+                                <td>{{ $item->teacher->name }}</td>
+                                <td>{{ $item->subject->name }}</td>
+                                <td>{{ $item->educationStage->name??"" }}</td>
+                                <td>{{ $item->start_datetime }}</td>
+                                <td>{{ $item->end_datetime }}</td>
+                                <td>{{ $item->lesson_type }}</td>
+
                                 <td>
-                                    <button type="button" class="btn btn-sm btn-warning" data-toggle="modal"
+                                  {{--  <button type="button" class="btn btn-sm btn-warning" data-toggle="modal"
                                             data-target="#editModal-{{ $item->id }}">
                                         {{ __('Edit') }}
-                                    </button>
-                                    <form action="{{ route('purchases.destroy', $item->id) }}" method="POST" class="d-inline">
+                                    </button>--}}
+                                    <a href="{{ route('lessons.occurrences', $item->id) }}" class="btn btn-sm btn-primary">View Recurrences</a>
+                                        <a href="{{ route('lessons.edit', $item->id) }}"
+                                           class="btn btn-sm btn-info">{{ __('edit') }}</a>
+
+                                    <form action="{{ route('lessons.destroy', $item->id) }}" method="POST"
+                                          class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger deleted-btn">{{ __('Delete') }}</button>
+                                        <button type="submit"
+                                                class="btn btn-sm btn-danger deleted-btn">{{ __('Delete') }}</button>
                                     </form>
                                 </td>
                             </tr>
+
+                            <!-- Edit Modal -->
                             <div class="modal fade" id="editModal-{{ $item->id }}" tabindex="-1" role="dialog"
                                  aria-labelledby="editModalLabel-{{ $item->id }}" aria-hidden="true">
                                 <div class="modal-dialog modal-md" role="document">
-                                    <form action="{{ route('purchases.update', $item->id) }}" method="POST"
+                                    <form action="{{ route('lessons.update', $item->id) }}" method="POST"
                                           enctype="multipart/form-data" class="w-100">
                                         @csrf
                                         @method('PUT')
@@ -64,14 +77,6 @@
                                             </div>
 
                                             <div class="modal-body">
-                                                <div class="form-group">
-                                                    <label>{{ __('Remaining Credits	') }} <span class="text-danger">*</span></label>
-                                                    <input type="number" name="remaining_credits" class="form-control"
-                                                           value="{{ old('remaining_credits', $item->remaining_credits) }}" required>
-                                                </div>
-
-
-
 
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
@@ -87,13 +92,13 @@
 
                         @empty
                             <tr>
-                                <td colspan="7">{{ __('No data found.') }}</td>
+                                <td colspan="8">{{ __('No data found.') }}</td>
                             </tr>
                         @endforelse
                         </tbody>
                     </table>
 
-                    {{ $purchases->links() }}
+                    {{ $lessons->links() }}
                 </div>
             </div>
         </div>
@@ -110,7 +115,7 @@
                     const form = this.closest('form');
                     Swal.fire({
                         title: '{{ __("Delete Confirmation") }}',
-                        text: '{{ __("Are you sure you want to delete this Record?") }}',
+                        text: '{{ __("Are you sure you want to delete this package?") }}',
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonText: '{{ __("Yes, delete it!") }}',

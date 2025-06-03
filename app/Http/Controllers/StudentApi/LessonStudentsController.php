@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\StudentApi;
 
+use App\Enums\LessonType;
 use App\Helpers\ErrorHandler;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AssignAndCancelLessonRequest;
@@ -69,12 +70,19 @@ class LessonStudentsController extends Controller
                 "status" => "error",
                 'message' => 'You are already assigned to this lesson.'], 409);
         }
+        $studentCount = LessonStudent::where('lesson_occurrence_id', $lessonOccurrence->id)->count();
         if ($lesson->lesson_type->value === \App\Enums\LessonType::Individual->value) {
-            $studentCount = LessonStudent::where('lesson_occurrence_id', $lessonOccurrence->id)->count();
             if ($studentCount >= 1) {
                 return response()->json([
                     "status" => "error",
                     'message' => 'This individual lesson is already booked by another student.'
+                ], 403);
+            }
+        } elseif ($lesson->lesson_type->value === LessonType::Group->value) {
+            if ($studentCount >= 5) {
+                return response()->json([
+                    "status" => "error",
+                    'message' => 'This group lesson is fully booked. Maximum 5 students allowed.'
                 ], 403);
             }
         }

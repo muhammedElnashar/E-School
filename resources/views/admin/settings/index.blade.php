@@ -1,62 +1,62 @@
 @extends('layouts.master')
 
 @section('title')
-    {{ __('Purchases') }}
+    {{ __('Settings') }}
 @endsection
 
 @section('content')
     <div class="content-wrapper">
         <div class="page-header d-flex justify-content-between align-items-center">
-            <h3 class="page-title">{{ __('Purchases') }}</h3>
-            <a href="{{ route('purchases.create') }}" class="btn btn-primary">{{ __('Manual Purchases') }}</a>
+            <h3 class="page-title">{{ __('Manage Settings') }}</h3>
+            <a href="{{ route('settings.create') }}" class="btn btn-primary">{{ __('Create Settings') }}</a>
         </div>
 
         <div class="card shadow-sm">
             <div class="card-body">
-                    <h4 class="card-title">{{ __('Manual Purchase List') }}</h4>
+                <h4 class="card-title">{{ __('Settings List') }}</h4>
                 <div class="table-responsive">
                     <table class="table table-bordered table-striped text-center">
                         <thead>
                         <tr>
                             <th>#</th>
-                            <th>{{ __('Username') }}</th>
-                            <th>{{ __('Marketplace Item') }}</th>
-                            <th>{{ __(' price') }}</th>
-                            <th>{{ __('Remaining Credits') }}</th>
+                            <th>{{ __('Key') }}</th>
+                            <th>{{ __('Value') }}</th>
                             <th>{{ __('Action') }}</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @forelse ($purchases as $item)
+                        @forelse ($settings as $item)
                             <tr>
                                 <td>{{ $item->id }}</td>
-                                <td>{{ $item->user->name }}</td>
-                                <td>{{ $item->marketplaceItem->name}} - {{ $item->marketplaceItem-> package_scope}} </td>
-                                <td>{{ $item->price }}</td>
-                                <td>{{ $item->remaining_credits }}</td>
+                                <td>{{ $item->key }}</td>
+                                <td>{{ $item->value }}</td>
                                 <td>
                                     <button type="button" class="btn btn-sm btn-warning" data-toggle="modal"
                                             data-target="#editModal-{{ $item->id }}">
                                         {{ __('Edit') }}
                                     </button>
-                                    <form action="{{ route('purchases.destroy', $item->id) }}" method="POST" class="d-inline">
+                                    <form action="{{ route('settings.destroy', $item->id) }}" method="POST"
+                                          class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger deleted-btn">{{ __('Delete') }}</button>
+                                        <button type="submit"
+                                                class="btn btn-sm btn-danger deleted-btn">{{ __('Delete') }}</button>
                                     </form>
                                 </td>
                             </tr>
+
+                            <!-- Edit Modal -->
                             <div class="modal fade" id="editModal-{{ $item->id }}" tabindex="-1" role="dialog"
                                  aria-labelledby="editModalLabel-{{ $item->id }}" aria-hidden="true">
                                 <div class="modal-dialog modal-md" role="document">
-                                    <form action="{{ route('purchases.update', $item->id) }}" method="POST"
+                                    <form action="{{ route('settings.update', $item->id) }}" method="POST"
                                           enctype="multipart/form-data" class="w-100">
                                         @csrf
                                         @method('PUT')
                                         <div class="modal-content">
                                             <div class="modal-header bg-primary text-white">
-                                                <h5 class="modal-title">{{ __('Edit Package') }}
-                                                    - {{ $item->name }}</h5>
+                                                <h5 class="modal-title">{{ __('Edit settings') }}
+                                                    - {{ $item->key }}</h5>
                                                 <button type="button" class="close text-white" data-dismiss="modal"
                                                         aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
@@ -65,9 +65,15 @@
 
                                             <div class="modal-body">
                                                 <div class="form-group">
-                                                    <label>{{ __('Remaining Credits	') }} <span class="text-danger">*</span></label>
-                                                    <input type="number" name="remaining_credits" class="form-control"
-                                                           value="{{ old('remaining_credits', $item->remaining_credits) }}" required>
+                                                    <label>{{ __('Key') }} <span class="text-danger">*</span></label>
+                                                    <input type="text" name="key" class="form-control"
+                                                           value="{{ old('key', $item->key) }}" required>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>{{ __('Value') }}</label>
+                                                    <textarea name="value" class="form-control">{{ old('value', $item->value) }}
+                                                    </textarea>
                                                 </div>
 
 
@@ -93,7 +99,7 @@
                         </tbody>
                     </table>
 
-                    {{ $purchases->links() }}
+                    {{ $settings->links() }}
                 </div>
             </div>
         </div>
@@ -102,7 +108,6 @@
 
 @section('script')
     <script>
-
         document.addEventListener("DOMContentLoaded", function () {
             document.querySelectorAll('.deleted-btn').forEach(function (btn) {
                 btn.addEventListener('click', function (e) {

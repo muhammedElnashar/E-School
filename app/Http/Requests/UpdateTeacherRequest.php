@@ -32,7 +32,13 @@ class UpdateTeacherRequest extends FormRequest
                 'email',
                 'max:255',
                 Rule::unique('users', 'email')->ignore($this->route('teacher')), // or $this->user()->id if applicable
-            ], 'password' => ['required', Password::min(8)->mixedCase()->numbers()->symbols()],
+            ], 'password' => ['nullable', Password::min(8)->mixedCase()->numbers()->symbols()],
+            'phone' => 'nullable|string',
+            'iban' => [
+                'nullable',
+                'string', // Example regex for IBAN validation
+            ],
+
         ];
 
     }

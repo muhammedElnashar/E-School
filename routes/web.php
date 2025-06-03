@@ -5,11 +5,11 @@ use App\Http\Controllers\Admin\DigitalAssetController;
 use App\Http\Controllers\Admin\EducationStageController;
 use App\Http\Controllers\Admin\PackageController;
 use App\Http\Controllers\Admin\PurchasesController;
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SubjectController;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Artisan;
-use App\Http\Controllers\SettingController;
 use Illuminate\Support\Facades\Session;
 
 /*
@@ -41,15 +41,25 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::resource('marketplace-items/package', PackageController::class);
     Route::get('/subjects/{subject}/related-stages', [SubjectController::class, 'getRelatedStages']);
     Route::resource('marketplace-items/digital-assets', DigitalAssetController::class);
-    Route::get('/purchases', [PurchasesController::class, 'index'])->name('purchases.index');
+    Route::resource('purchases',PurchasesController::class);
+    Route::resource('lessons',\App\Http\Controllers\Admin\LessonController::class);
+    Route::get('/lessons/{lesson}/occurrences', [\App\Http\Controllers\Admin\LessonController::class, 'occurrenceLesson'])->name('lessons.occurrences');
+    Route::get('/teachers/{teacher}/subjects', [\App\Http\Controllers\Admin\LessonController::class, 'getSubjects']);
+
+    /*Route::get('/purchases', [PurchasesController::class, 'index'])->name('purchases.index');
     Route::get('/purchases/create', [PurchasesController::class, 'create'])->name('purchases.create');
     Route::post('/purchases', [PurchasesController::class, 'store'])->name('purchases.store');
-    Route::delete('/purchases/{purchase}', [PurchasesController::class, 'destroy'])->name('purchases.destroy');
+    Route::put('/purchases/{purchase}', [PurchasesController::class, 'update'])->name('purchases.update');
+    Route::delete('/purchases/{purchase}', [PurchasesController::class, 'destroy'])->name('purchases.destroy');*/
     Route::get("all-assignment", [App\Http\Controllers\Admin\AssignmentsController::class, 'allAssignment'])->name('assignment.all');
     Route::get("all-submission/{id}", [App\Http\Controllers\Admin\AssignmentsController::class, 'getAllSubmissionsForAssignments'])->name('submission.all');
     Route::delete("destroy-assignment/{id}", [App\Http\Controllers\Admin\AssignmentsController::class, 'destroyAssignment'])->name('assignment.destroy');
     Route::delete("destroy-submission/{id}", [App\Http\Controllers\Admin\AssignmentsController::class, 'destroySubmission'])->name('submission.destroy');
-
+    Route::resource('settings', SettingController::class);
+    Route::get('chat',function (){
+        $users = \App\Models\User::where('id', '!=', Auth::id())->get();
+       return view('admin.chat.admin-chat',compact('users'));
+    });
 
 });
 

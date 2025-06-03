@@ -22,6 +22,7 @@
                             <th>{{ __('User Code') }}</th>
                             <th>{{ __('Name') }}</th>
                             <th>{{ __('Email') }}</th>
+                            <th>{{ __('Phone') }}</th>
                             <th>{{ __('Iban') }}</th>
                             <th>{{ __('Image') }}</th>
                             <th>{{ __('Action') }}</th>
@@ -34,6 +35,7 @@
                                 <td>{{ $item->user_code }}</td>
                                 <td>{{ $item->name }}</td>
                                 <td>{{ $item->email }}</td>
+                                <td>{{ $item->phone }}</td>
                                 <td>{{ $item->iban }}</td>
                                 <td>@if($item->image)
                                         <img src="{{asset("storage/". $item->image) }}">
@@ -83,10 +85,20 @@
                                                     <input type="text" name="email" value="{{ old('email', $item->email) }}"
                                                            class="form-control">
                                                 </div>
+                                                <div class="form-group">
+                                                    <label>{{ __('Phone') }}</label>
+                                                    <input type="text" name="phone" value="{{ old('phone', $item->phone) }}"
+                                                           class="form-control">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>{{ __('Iban') }}</label>
+                                                    <input type="text" name="iban" value="{{ old('iban', $item->iban) }}"
+                                                           class="form-control">
+                                                </div>
 
                                                 <div class="form-group">
                                                     <label>{{ __('Password') }} <span class="text-danger">*</span></label>
-                                                    <input type="password"  name="password" class="form-control" required>
+                                                    <input type="password"  name="password" class="form-control" >
                                                 </div>
 
 

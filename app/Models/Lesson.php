@@ -19,6 +19,7 @@ class Lesson extends Model
     protected $casts = [
         'lesson_type' => LessonType::class,
 
+
     ];
     public function teacher()
     {

@@ -41,6 +41,15 @@ class PurchasesController extends Controller
 
     }
 
+    public function update(Request $request , Purchase $purchase)
+    {
+        $validated = $request->validate([
+            'remaining_credits' => ['required', 'integer', 'min:0'],
+        ]);
+        $purchase->update($validated);
+        return redirect()->route('purchases.index')->with('success', 'Purchase updated successfully.');
+    }
+
     public function destroy(Purchase $purchase)
     {
         try {

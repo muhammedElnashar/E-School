@@ -84,13 +84,20 @@ class TeacherController extends Controller
 
         $teacher->name = $request->input('name');
         $teacher->email = $request->input('email');
+        $teacher->phone = $request->input('phone');
+        $teacher->iban = $request->input('iban');
 
         if ($request->filled('password')) {
             $teacher->password = Hash::make($request->input('password'));
         }
+
         $teacher->save();
-        return redirect()->route('teacher.index')->with('success', 'تم تحديث بيانات المعلم بنجاح');
+
+        return redirect()
+            ->route('teacher.index')
+            ->with('success', 'Teacher updated successfully.');
     }
+
 
     /**
      * Remove the specified resource from storage.

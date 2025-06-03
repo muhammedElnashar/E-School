@@ -19,4 +19,8 @@ class LessonOccurrence extends Model
     {
         return $this->belongsTo(Lesson::class);
     }
+    public function students()
+    {
+        return $this->belongsToMany(User::class, 'lesson_students', 'lesson_occurrence_id', 'student_id');
+    }
 }

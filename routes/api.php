@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\StudentApi\EmailVerify;
 use App\Http\Controllers\StudentApi\MarketplaceItemController;
 use App\Http\Controllers\StudentApi\ResetPassword;
@@ -21,6 +22,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/chat/conversation', [ChatController::class, 'createOrGetConversation']);
+    Route::get('/chat/conversations', [ChatController::class, 'userConversations']);
+    Route::post('/chat/send', [ChatController::class, 'sendMessage']);
+    Route::get('/chat/messages/{conversation_id}', [ChatController::class, 'getMessages']);
+    Route::get('lesson/{lesson}/join', [LessonController::class, 'joinLesson']);
+
+});
 
 /**
  * STUDENT APIs
@@ -57,7 +66,11 @@ Route::group(['prefix' => 'student'], function () {
         Route::get('/lessons/list',[\App\Http\Controllers\StudentApi\LessonStudentsController::class,'list']);
         Route::post('/assign/lesson',[\App\Http\Controllers\StudentApi\LessonStudentsController::class,'assign']);
         Route::delete('/cancel/lesson/{id}',[\App\Http\Controllers\StudentApi\LessonStudentsController::class,'cancel']);
+        Route::get('/all-assignments', [SubmissionController::class, 'getAllAssignments']);
+        Route::get('/submission', [SubmissionController::class, 'AllStudentSubmissions']);
         Route::post('/submission', [SubmissionController::class, 'store']);
+        Route::delete('/submission/destroy/{id}', [SubmissionController::class, 'destroy']);
+
         Route::get("announcements",[\App\Http\Controllers\StudentApi\Announcement::class, 'index']);
 
     });
@@ -84,7 +97,6 @@ Route::group(['prefix' => 'teacher'], function () {
         Route::put('/lesson/{lesson}', [LessonController::class, 'update']);
         Route::delete('/lesson/{lesson}', [LessonController::class, 'destroy']);
         Route::apiResource('teacher/subjects', TeacherSubjectController::class);
-//        Route::middleware('auth:sanctum')->get('lesson/{lesson}/join', [LessonController::class, 'joinLesson']);
         // Assignments
         Route::get('/assignments', [\App\Http\Controllers\TeacherApi\AssignmentController::class, 'index']);
         Route::post('/assignments', [\App\Http\Controllers\TeacherApi\AssignmentController::class, 'store']);

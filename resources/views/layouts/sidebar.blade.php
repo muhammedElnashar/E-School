@@ -28,13 +28,27 @@
         <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#education-menu" aria-expanded="false"
                aria-controls="education-menu">
-                <i class="fa fa-university menu-icon"></i><span class="menu-title">{{ __('Education Stages') }}</span>
+                <i class="fa fa-edge menu-icon"></i><span class="menu-title">{{ __('Education Stages') }}</span>
                 <i class="fa fa-angle-left fa-2xl menu-arrow"></i>
             </a>
             <div class="collapse" id="education-menu">
                 <ul class="nav flex-column sub-menu">
                         <li class="nav-item">
                             <a class="nav-link" href="{{route("stages.index")}}"> {{ __('Education Stages') }} </a>
+                        </li>
+                </ul>
+            </div>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#lesson-menu" aria-expanded="false"
+               aria-controls="lesson-menu">
+                <i class="fa fa-dedent menu-icon"></i><span class="menu-title">{{ __('Lessons') }}</span>
+                <i class="fa fa-angle-left fa-2xl menu-arrow"></i>
+            </a>
+            <div class="collapse" id="lesson-menu">
+                <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{route("lessons.index")}}"> {{ __('Lessons List') }} </a>
                         </li>
                 </ul>
             </div>
@@ -59,7 +73,7 @@
         <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#teacher-menu" aria-expanded="false"
                aria-controls="teacher-menu">
-                <i class="fa fa-university menu-icon"></i><span class="menu-title">{{ __('Users') }}</span>
+                <i class="fa fa-user menu-icon"></i><span class="menu-title">{{ __('Users') }}</span>
                 <i class="fa fa-angle-left fa-2xl menu-arrow"></i>
             </a>
             <div class="collapse" id="teacher-menu">
@@ -77,7 +91,7 @@
         <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#payment-menu" aria-expanded="false"
                aria-controls="payment-menu">
-                <i class="fa fa-university menu-icon"></i><span class="menu-title">{{ __('Purchases') }}</span>
+                <i class="fa fa-paypal menu-icon"></i><span class="menu-title">{{ __('Purchases') }}</span>
                 <i class="fa fa-angle-left fa-2xl menu-arrow"></i>
             </a>
             <div class="collapse" id="payment-menu">

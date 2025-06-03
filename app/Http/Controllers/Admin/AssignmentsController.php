@@ -45,4 +45,6 @@ class AssignmentsController extends Controller
         $submission->delete();
         return redirect()->back()->with('success', 'Submission deleted successfully.');
     }
+
+
 }
