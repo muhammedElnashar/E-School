@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\TeacherApi;
 
+use App\Enums\RoleEnum;
 use App\Helpers\ErrorHandler;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DeleteUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\TeacherResource;
+use App\Http\Resources\TeacherSubjectResource;
 use App\Http\Resources\UserResource;
+use App\Models\TeacherSubject;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
@@ -44,5 +47,25 @@ class UserController extends Controller
         }
 
     }
+
+    public function getTeacherSubject()
+    {
+        try {
+            $user = auth()->user();
+            if ($user->role->value !== RoleEnum::Teacher->value) {
+                return response()->json([
+                    'message' => 'Unauthorized',
+                ], 403);
+            }
+            $subjects = TeacherSubject::with('subject','educationStage')->where('teacher_id',$user->id)->get();
+            return response()->json([
+                'message' => 'Subjects retrieved successfully',
+                'data' => TeacherSubjectResource::collection($subjects),
+            ], 200);
+        } catch (\Throwable $e) {
+            return ErrorHandler::handle($e);
+        }
+    }
+
 
 }

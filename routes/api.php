@@ -96,7 +96,7 @@ Route::group(['prefix' => 'teacher'], function () {
         Route::post('/lesson', [LessonController::class, 'store']);
         Route::put('/lesson/{lesson}', [LessonController::class, 'update']);
         Route::delete('/lesson/{lesson}', [LessonController::class, 'destroy']);
-        Route::apiResource('teacher/subjects', TeacherSubjectController::class);
+        Route::get('teacher/subjects',[UserController::class,'getTeacherSubject']);
         // Assignments
         Route::get('/assignments', [\App\Http\Controllers\TeacherApi\AssignmentController::class, 'index']);
         Route::post('/assignments', [\App\Http\Controllers\TeacherApi\AssignmentController::class, 'store']);
