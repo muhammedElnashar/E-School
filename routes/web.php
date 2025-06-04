@@ -46,11 +46,13 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/lessons/{lesson}/occurrences', [\App\Http\Controllers\Admin\LessonController::class, 'occurrenceLesson'])->name('lessons.occurrences');
     Route::get('/teachers/{teacher}/subjects', [\App\Http\Controllers\Admin\LessonController::class, 'getSubjects']);
 
-    /*Route::get('/purchases', [PurchasesController::class, 'index'])->name('purchases.index');
-    Route::get('/purchases/create', [PurchasesController::class, 'create'])->name('purchases.create');
-    Route::post('/purchases', [PurchasesController::class, 'store'])->name('purchases.store');
-    Route::put('/purchases/{purchase}', [PurchasesController::class, 'update'])->name('purchases.update');
-    Route::delete('/purchases/{purchase}', [PurchasesController::class, 'destroy'])->name('purchases.destroy');*/
+    //Teacher Subject Routes
+    Route::get('/teachers-subjects/{teacher}', [\App\Http\Controllers\Admin\TeacherSubjectController::class, 'index'])->name('teacher.subject.index');
+    Route::get('/teachers-subjects/create/{teacher_id}', [\App\Http\Controllers\Admin\TeacherSubjectController::class, 'create'])->name('teacher.subject.create');
+    Route::post('/teachers-subjects', [\App\Http\Controllers\Admin\TeacherSubjectController::class, 'store'])->name('teacher.subject.store');
+    Route::delete('teachers-subjects/{teacher_subject}', [\App\Http\Controllers\Admin\TeacherSubjectController::class, 'destroy'])->name('teacher.subject.destroy');
+
+    //Assignments Routes
     Route::get("all-assignment", [App\Http\Controllers\Admin\AssignmentsController::class, 'allAssignment'])->name('assignment.all');
     Route::get("all-submission/{id}", [App\Http\Controllers\Admin\AssignmentsController::class, 'getAllSubmissionsForAssignments'])->name('submission.all');
     Route::delete("destroy-assignment/{id}", [App\Http\Controllers\Admin\AssignmentsController::class, 'destroyAssignment'])->name('assignment.destroy');

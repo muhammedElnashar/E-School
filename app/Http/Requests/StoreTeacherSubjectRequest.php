@@ -16,6 +16,7 @@ class StoreTeacherSubjectRequest extends FormRequest
     public function rules()
     {
         return [
+            'teacher_id' => ['required', 'exists:users,id'],
             'subject_id' => ['required', 'exists:subjects,id'],
             'education_stage_id' => ['nullable', 'exists:education_stages,id'],
         ];
@@ -24,7 +25,7 @@ class StoreTeacherSubjectRequest extends FormRequest
     public function withValidator(Validator $validator)
     {
         $validator->after(function ($validator) {
-            $teacher_id = auth()->id();
+            $teacher_id = $this->input('teacher_id'); // <-- هذا هو التصحيح
             $subject_id = $this->input('subject_id');
             $education_stage_id = $this->input('education_stage_id');
 
@@ -39,18 +40,11 @@ class StoreTeacherSubjectRequest extends FormRequest
                 })->exists();
 
             if ($exists) {
-                $validator->errors()->add('subject_id', 'already added this Subject and stage.');
+                $validator->errors()->add('subject_id', 'already added this Subject and Stage For This Teacher.');
             }
         });
     }
 
 
-    public function failedValidation(Validator|\Illuminate\Contracts\Validation\Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'errors' => $validator->errors(),
-            'message' => 'Validation failed',
-        ], 422));
-    }
 
 }

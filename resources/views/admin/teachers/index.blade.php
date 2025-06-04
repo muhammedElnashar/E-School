@@ -41,6 +41,9 @@
                                         <img src="{{asset("storage/". $item->image) }}">
                                 @endif</td>
                                 <td>
+                                    <a href="{{ route('teacher.subject.index', $item->id) }}"
+                                       class="btn btn-sm btn-info">{{ __('View Subject') }}
+                                    </a>
                                     <button type="button" class="btn btn-sm btn-warning" data-toggle="modal"
                                             data-target="#editModal-{{ $item->id }}">
                                         {{ __('Edit') }}

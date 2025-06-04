@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\TeacherSubjectController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\StudentApi\EmailVerify;
 use App\Http\Controllers\StudentApi\MarketplaceItemController;
@@ -7,7 +8,6 @@ use App\Http\Controllers\StudentApi\ResetPassword;
 use App\Http\Controllers\StudentApi\SubmissionController;
 use App\Http\Controllers\TeacherApi\AuthController;
 use App\Http\Controllers\TeacherApi\LessonController;
-use App\Http\Controllers\TeacherApi\TeacherSubjectController;
 use App\Http\Controllers\TeacherApi\UserController;
 use Illuminate\Support\Facades\Route;
 
