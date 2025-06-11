@@ -89,7 +89,6 @@
     <!-- Pusher JS -->
     <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
     <script>
-        // تمكين سجل الأخطاء (اختياري)
         Pusher.logToConsole = true;
 
         const pusher = new Pusher("{{ env('PUSHER_APP_KEY') }}", {
@@ -106,16 +105,20 @@
         channel.bind("new.message", function(data) {
             console.log('رسالة جديدة:', data);
 
+            const isMine = parseInt(data.sender_id) === {{ auth()->id() }};
             const chatBox = document.getElementById('chat-box');
-            chatBox.innerHTML += `
-            <div class="mb-3">
-                <div class="d-inline-block px-3 py-2 rounded bg-light">
-                    <strong>${data.sender_name}:</strong><br>
-                    ${data.message}
+
+            const messageHtml = `
+            <div class="mb-3 d-flex ${isMine ? 'justify-content-end' : 'justify-content-start'}">
+                <div class="px-3 py-2 rounded shadow-sm ${isMine ? 'bg-primary text-white text-end' : 'bg-light text-start'}" style="max-width: 70%;">
+                    <div><strong>${data.sender_name}</strong></div>
+                    <div>${data.message}</div>
+                    <div class="small mt-1">${data.created_at}</div>
                 </div>
-                <div class="small text-muted mt-1">${data.created_at}</div>
             </div>
         `;
+
+            chatBox.innerHTML += messageHtml;
             chatBox.scrollTop = chatBox.scrollHeight;
         });
     </script>
