@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -18,13 +17,11 @@ return new class extends Migration
             $table->foreignId('conversation_id')->constrained('conversations')->onDelete('cascade');
             $table->foreignId('sender_id')->constrained('users')->onDelete('cascade');
             $table->text('message');
-            $table->boolean('is_read')->default(false);
             $table->timestamps();
-
             // فهارس محسنة للأداء
             $table->index(['conversation_id', 'created_at']);
-            $table->index(['sender_id', 'is_read']);
-        });
+            $table->index(['sender_id', 'created_at']);
+    });
     }
 
     /**

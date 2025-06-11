@@ -1,4 +1,5 @@
 <script src="{{ asset('/assets/js/vendor.bundle.base.js') }}"></script>
+
 <script src="{{ asset('/assets/js/Chart.min.js') }}"></script>
 <script src="{{ asset('/assets/js/jquery.validate.min.js') }}"></script>
 <script src="{{ asset('/assets/jquery-toast-plugin/jquery.toast.min.js') }}"></script>

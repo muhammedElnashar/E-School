@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\Admin\ChatController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DigitalAssetController;
 use App\Http\Controllers\Admin\EducationStageController;
+use App\Http\Controllers\Admin\MangeConversation;
 use App\Http\Controllers\Admin\PackageController;
 use App\Http\Controllers\Admin\PurchasesController;
 use App\Http\Controllers\Admin\SettingController;
@@ -58,10 +60,16 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::delete("destroy-assignment/{id}", [App\Http\Controllers\Admin\AssignmentsController::class, 'destroyAssignment'])->name('assignment.destroy');
     Route::delete("destroy-submission/{id}", [App\Http\Controllers\Admin\AssignmentsController::class, 'destroySubmission'])->name('submission.destroy');
     Route::resource('settings', SettingController::class);
-    Route::get('chat',function (){
-        $users = \App\Models\User::where('id', '!=', Auth::id())->get();
-       return view('admin.chat.admin-chat',compact('users'));
-    });
+    //ADMIN Chat
+    Route::get('chat', [ChatController::class, 'index'])->name('admin.chat.index');
+    Route::get('chat/search', [ChatController::class, 'search'])->name('admin.chat.search');
+    Route::get('chat/with/{userId}', [ChatController::class, 'chatWithUser'])->name('admin.chat.withUser');
+    Route::post('chat/send', [ChatController::class, 'sendMessage'])->name('admin.chat.send');
+    Route::delete('chat/delete/{id}', [ChatController::class, 'deleteConversation'])->name('admin.conversation.delete');
+    //Manage Conversations
+    Route::get('conversations', [MangeConversation::class, 'conversations'])->name('admin.chat.conversations');
+    Route::get('conversations/{id}', [MangeConversation::class, 'showConversation'])->name('admin.chat.showConversation');
+    Route::delete('conversations/{id}', [MangeConversation::class, 'deleteMessage'])->name('admin.message.delete');
 
 });
 

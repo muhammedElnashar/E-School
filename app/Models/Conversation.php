@@ -7,23 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class Conversation extends Model
 {
-    use HasFactory;
-    protected $fillable = [
-        'user_one_id',
-        'user_two_id',
-    ];
-    public function userOne()
-    {
+    protected $fillable = ['user_one_id', 'user_two_id','last_message'];
+
+    public function userOne() {
         return $this->belongsTo(User::class, 'user_one_id');
     }
 
-    public function userTwo()
-    {
+    public function userTwo() {
         return $this->belongsTo(User::class, 'user_two_id');
     }
-
     public function messages()
     {
         return $this->hasMany(Chat::class);
+    }
+    public function otherUser($currentUserId)
+    {
+        return $this->user_one_id === $currentUserId ? $this->userTwo : $this->userOne;
     }
 }

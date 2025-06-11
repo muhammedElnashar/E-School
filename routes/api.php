@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\TeacherSubjectController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\StudentApi\EmailVerify;
 use App\Http\Controllers\StudentApi\MarketplaceItemController;
@@ -23,10 +22,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/chat/conversation', [ChatController::class, 'createOrGetConversation']);
-    Route::get('/chat/conversations', [ChatController::class, 'userConversations']);
     Route::post('/chat/send', [ChatController::class, 'sendMessage']);
-    Route::get('/chat/messages/{conversation_id}', [ChatController::class, 'getMessages']);
+    Route::get('/chat/conversations', [ChatController::class, 'getConversations']);
+    Route::get('/chat/messages/{conversationId}', [ChatController::class, 'getMessages']);
+    Route::post('/chat/search', [ChatController::class, 'searchUser']);
+    Route::delete('/chat/delete/{id}', [ChatController::class, 'destroyChat']);
+
     Route::get('lesson/{lesson}/join', [LessonController::class, 'joinLesson']);
 
 });

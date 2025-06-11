@@ -130,6 +130,34 @@
                 </ul>
             </div>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#chat-menu" aria-expanded="false"
+               aria-controls="chat-menu">
+                <i class="fa fa-send menu-icon"></i><span class="menu-title">{{ __('Chats') }}</span>
+                <i class="fa fa-angle-left fa-2xl menu-arrow"></i>
+            </a>
+            <div class="collapse" id="chat-menu">
+                <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{route("admin.chat.index")}}"> {{ __('All Chats') }} </a>
+                        </li>
+                </ul>
+            </div>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#conversations-menu" aria-expanded="false"
+               aria-controls="conversations-menu">
+                <i class="fa fa-send menu-icon"></i><span class="menu-title">{{ __('Conversations') }}</span>
+                <i class="fa fa-angle-left fa-2xl menu-arrow"></i>
+            </a>
+            <div class="collapse" id="conversations-menu">
+                <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{route("admin.chat.conversations")}}"> {{ __('All Conversations') }} </a>
+                        </li>
+                </ul>
+            </div>
+        </li>
 
         {{--        @hasrole('Super Admin')--}}
         {{--            --}}{{-- academics --}}

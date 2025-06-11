@@ -3,51 +3,45 @@
 namespace App\Events;
 
 use App\Models\Chat;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class NewMessage
+class NewMessage implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    public $message;
 
-    /**
-     * Create a new event instance.
-     *
-     * @return void
-     */
-    public function __construct(Chat $message)
+    public $chat;
+
+    public function __construct(Chat $chat)
     {
-        $this->message = $message->load('sender');
+        $this->chat = $chat->load('sender');
     }
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
     public function broadcastOn()
     {
-        return new PrivateChannel('chat.' . $this->message->conversation_id);
+        // بث في قناة خاصة بالمحادثة
+        return new PrivateChannel('conversation.' . $this->chat->conversation_id);
     }
+
     public function broadcastAs()
     {
         return 'new.message';
     }
+
     public function broadcastWith()
     {
         return [
-            'id' => $this->message->id,
-            'conversation_id' => $this->message->conversation_id,
-            'sender_id' => $this->message->sender_id,
-            'sender_name' => $this->message->sender->name ?? null,
-            'message' => $this->message->message,
-            'created_at' => $this->message->created_at->toDateTimeString(),
+            'id' => $this->chat->id,
+            'message' => $this->chat->message,
+            'sender_id' => $this->chat->sender->id,
+            'sender_name' => $this->chat->sender->name,
+            'conversation_id' => $this->chat->conversation_id,
+            'created_at' => $this->chat->created_at->toDateTimeString(),
+
         ];
     }
+
 }
