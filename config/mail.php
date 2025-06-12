@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('MAIL_MAILER', 'smtp'),
+    'default' => config('MAIL_MAILER', 'smtp'),
 
     /*
     |--------------------------------------------------------------------------
@@ -36,11 +36,12 @@ return [
     'mailers' => [
         'smtp' => [
             'transport' => 'smtp',
-            'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
-            'port' => env('MAIL_PORT', 587),
-            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
-            'username' => env('MAIL_USERNAME'),
-            'password' => env('MAIL_PASSWORD'),
+            'host' => config('mail.mailers.smtp.host'),
+            'port' => config('mail.mailers.smtp.port', 587),
+            'encryption' => config('mail.mailers.smtp.encryption', 'tls'),
+            'username' => config('mail.mailers.smtp.username'),
+            'password' => config('mail.mailers.smtp.password'),
+            'address' => config('mail.from.address'),
             'timeout' => null,
             'auth_mode' => null,
             'verify_peer' => false,

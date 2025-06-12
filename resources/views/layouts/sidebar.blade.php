@@ -11,7 +11,7 @@
         <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#academics-menu" aria-expanded="false"
                aria-controls="academics-menu">
-                <i class="fa fa-book menu-icon"></i><span class="menu-title">{{ __('Subjects') }}</span>
+                <i class="fa fa-dedent menu-icon"></i><span class="menu-title">{{ __('Subjects') }}</span>
                 <i class="fa fa-angle-left fa-2xl menu-arrow"></i>
             </a>
             <div class="collapse" id="academics-menu">
@@ -154,6 +154,20 @@
                 <ul class="nav flex-column sub-menu">
                         <li class="nav-item">
                             <a class="nav-link" href="{{route("admin.chat.conversations")}}"> {{ __('All Conversations') }} </a>
+                        </li>
+                </ul>
+            </div>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#settings-menu" aria-expanded="false"
+               aria-controls="settings-menu">
+                <i class="fa fa-gear menu-icon"></i><span class="menu-title">{{ __('Settings') }}</span>
+                <i class="fa fa-angle-left fa-2xl menu-arrow"></i>
+            </a>
+            <div class="collapse" id="settings-menu">
+                <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{route("settings.index")}}"> {{ __('All Settings') }} </a>
                         </li>
                 </ul>
             </div>

@@ -30,13 +30,13 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
     'google' => [
-        'client_id' => env('GOOGLE_CLIENT_ID'),
-        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-        'redirect' => env('GOOGLE_REDIRECT_URI'),
+        'client_id' => config('GOOGLE_CLIENT_ID'),
+        'client_secret' => config('GOOGLE_CLIENT_SECRET'),
+        'redirect' => config('GOOGLE_REDIRECT_URI'),
     ],
     'agora' => [
-        'app_id' => env('AGORA_APP_ID'),
-        'app_certificate' => env('AGORA_APP_CERTIFICATE'),
+        'app_id' => config('AGORA_APP_ID'),
+        'app_certificate' => config('AGORA_APP_CERTIFICATE'),
     ],
 
 ];

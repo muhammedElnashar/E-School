@@ -48,12 +48,42 @@
 
 
 @section('script')
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/relativeTime.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/locale/ar.js"></script>
+    <script>
+        dayjs.extend(dayjs_plugin_relativeTime);
+    </script>
+
+    <script>
+        const currentUserId = {{ auth()->id() }};
+        const currentUserName = "{{ auth()->user()->name }}";
+    </script>
+
     <script>
         document.getElementById('sendMessageForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // منع التحديث التلقائي
+            e.preventDefault();
 
             const form = e.target;
             const formData = new FormData(form);
+            const message = form.message.value;
+
+            const now = new Date().toISOString(); // ✅ هنا التعريف الصحيح
+            const readableTime = dayjs(now).fromNow();
+
+            const chatBox = document.getElementById('chat-box');
+            const messageHtml = `
+        <div class="mb-3 d-flex justify-content-end">
+            <div class="px-3 py-2 rounded shadow-sm bg-primary text-white text-end" style="max-width: 70%;">
+                <div><strong>${currentUserName}</strong></div>
+                <div>${message}</div>
+                <div class="small mt-1 time-elapsed" data-time="${now}">${readableTime}</div>
+            </div>
+        </div>
+    `;
+            chatBox.insertAdjacentHTML('beforeend', messageHtml);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            form.message.value = '';
 
             fetch(form.action, {
                 method: 'POST',
@@ -64,12 +94,7 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.success) {
-                        // تفريغ حقل الإدخال
-                        form.message.value = '';
-
-                        // سيتم عرض الرسالة تلقائيًا من خلال Pusher
-                    } else {
+                    if (!data.success) {
                         alert('فشل إرسال الرسالة');
                     }
                 })
@@ -86,13 +111,14 @@
             chatBox.scrollTop = chatBox.scrollHeight;
         };
     </script>
+
     <!-- Pusher JS -->
     <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
     <script>
         Pusher.logToConsole = true;
 
-        const pusher = new Pusher("{{ env('PUSHER_APP_KEY') }}", {
-            cluster: "{{ env('PUSHER_APP_CLUSTER') }}",
+        const pusher = new Pusher("{{ config('broadcasting.connections.pusher.key') }}", {
+            cluster: "{{ config('broadcasting.connections.pusher.options.cluster') }}",
             authEndpoint: "/broadcasting/auth",
             auth: {
                 headers: {
@@ -103,26 +129,26 @@
 
         const channel = pusher.subscribe("private-conversation.{{ $conversation->id }}");
         channel.bind("new.message", function(data) {
-            console.log('رسالة جديدة:', data);
+            if (parseInt(data.sender_id) === {{ auth()->id() }}) {
+                return;
+            }
 
-            const isMine = parseInt(data.sender_id) === {{ auth()->id() }};
             const chatBox = document.getElementById('chat-box');
 
+            const now = new Date().toISOString(); // ✅ هنا التعريف الصحيح
+            const readableTime = dayjs(now).fromNow();
             const messageHtml = `
-            <div class="mb-3 d-flex ${isMine ? 'justify-content-end' : 'justify-content-start'}">
-                <div class="px-3 py-2 rounded shadow-sm ${isMine ? 'bg-primary text-white text-end' : 'bg-light text-start'}" style="max-width: 70%;">
-                    <div><strong>${data.sender_name}</strong></div>
-                    <div>${data.message}</div>
-                    <div class="small mt-1">${data.created_at}</div>
-                </div>
-            </div>
-        `;
+        <div class="mb-3 d-flex justify-content-start">
+            <div class="px-3 py-2 rounded shadow-sm bg-light text-start" style="max-width: 70%;">
+                <div><strong>${data.sender_name}</strong></div>
+                <div>${data.message}</div>
+                <div class="small mt-1 time-elapsed" data-time="${now}">${readableTime}</div>
 
+            </div>
+        </div>
+    `;
             chatBox.innerHTML += messageHtml;
             chatBox.scrollTop = chatBox.scrollHeight;
         });
     </script>
-
-
-
 @endsection

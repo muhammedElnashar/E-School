@@ -31,7 +31,11 @@
                                 <label>{{ __('Password') }} <span class="text-danger">*</span></label>
                                 <input type="password"  name="password" class="form-control"  required>
                             </div>
-
+                            <div class="form-group">
+                                <label>{{ __('Iban') }}</label>
+                                <input type="text" name="iban" value="{{ old('iban') }}"
+                                       class="form-control">
+                            </div>
                             <button class="btn btn-theme btn-block" type="submit">{{ __('Submit') }}</button>
                         </form>
                     </div>

@@ -5,13 +5,12 @@ namespace App\Http\Controllers\TeacherApi;
 use App\Enums\RoleEnum;
 use App\Helpers\ErrorHandler;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\DeleteUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Resources\StudentResource;
 use App\Http\Resources\TeacherResource;
 use App\Http\Resources\TeacherSubjectResource;
-use App\Http\Resources\UserResource;
 use App\Models\TeacherSubject;
-use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
@@ -66,6 +65,17 @@ class UserController extends Controller
             return ErrorHandler::handle($e);
         }
     }
-
-
+    public function getUserInfo($id)
+    {
+        $user = User::whereNotIn('role', [RoleEnum::Admin, RoleEnum::SuperAdmin])
+            ->where('id', $id)
+            ->first();
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+        return response()->json([
+            'status' => 'success',
+            "data"=> new StudentResource($user),
+        ]);
+    }
 }

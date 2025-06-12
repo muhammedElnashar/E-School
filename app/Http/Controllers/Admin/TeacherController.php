@@ -39,6 +39,7 @@ class TeacherController extends Controller
     public function store(StoreTeacherRequest $request)
     {
         $data = $request->validated();
+
         $data['password'] = Hash::make($data['password']);
         $data["user_code"] = random_int(1000000, 9999999);
         while (User::where('user_code', $data['user_code'])->exists()) {

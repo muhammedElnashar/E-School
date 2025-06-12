@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 
 class SettingController extends Controller
 {
@@ -14,7 +15,7 @@ class SettingController extends Controller
      */
     public function index()
     {
-        $settings = Setting::paginate(5);
+        $settings = Setting::paginate(10);
 
         return view('admin.settings.index',compact('settings'));
     }
@@ -38,9 +39,10 @@ class SettingController extends Controller
         $request->validate([
             'key' => 'required|string|max:255|unique:settings,key',
             'value' => 'required|string',
+            'add_to_env' => 'required|boolean',
         ]);
 
-        Setting::create($request->only(['key', 'value']));
+        Setting::create($request->only(['key', 'value','add_to_env']));
 
         return redirect()->route('settings.index')->with('success', 'Setting created successfully.');
     }
@@ -78,9 +80,10 @@ class SettingController extends Controller
         $request->validate([
             'key' => 'required|string|max:255|unique:settings,key,' . $setting->id,
             'value' => 'required|string',
+            'add_to_env' => 'required|boolean',
         ]);
 
-        $setting->update($request->only(['key', 'value']));
+        $setting->update($request->only(['key', 'value','add_to_env']));
 
         return redirect()->route('settings.index')->with('success', 'Setting updated successfully.');
     }
@@ -96,4 +99,44 @@ class SettingController extends Controller
 
         return redirect()->route('settings.index')->with('success', 'Setting deleted successfully.');
     }
+
+    public function updateEnvFromSettings()
+    {
+        $settings = Setting::where('add_to_env', true)->get();
+
+        foreach ($settings as $setting) {
+            $this->updateEnvFile(strtoupper($setting->key), $setting->value);
+        }
+
+        Artisan::call('config:clear');
+        Artisan::call('cache:clear');
+        Artisan::call('config:cache');
+
+        return redirect()->route('settings.index')->with('success', '.env تم تحديثه من الإعدادات المختارة بنجاح.');
+    }
+    protected function updateEnvFile($key, $value)
+    {
+        $envPath = base_path('.env');
+        $keyExists = false;
+
+        if (file_exists($envPath)) {
+            $envContent = file_get_contents($envPath);
+            $lines = explode("\n", $envContent);
+
+            foreach ($lines as &$line) {
+                if (strpos($line, $key . '=') === 0) {
+                    $line = $key . '=' . $value;
+                    $keyExists = true;
+                    break;
+                }
+            }
+
+            if (!$keyExists) {
+                $lines[] = $key . '=' . $value;
+            }
+
+            file_put_contents($envPath, implode("\n", $lines));
+        }
+    }
+
 }

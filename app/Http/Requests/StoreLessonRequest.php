@@ -4,6 +4,8 @@ namespace App\Http\Requests;
 
 use App\Enums\Scopes;
 use App\Models\Subject;
+use App\Models\TeacherSubject;
+use Carbon\Carbon;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -48,10 +50,11 @@ class StoreLessonRequest extends FormRequest
         $validator->after(function ($validator) {
             $subjectId = $this->input('subject_id');
             $educationStageId = $this->input('education_stage_id');
+            $start = $this->input('start_datetime');
+            $end = $this->input('end_datetime');
 
             if ($subjectId && $educationStageId) {
                 $subject = Subject::with('stages')->find($subjectId);
-
                 if ($subject) {
                     $hasStage = $subject->stages->contains('id', $educationStageId);
                     if (!$hasStage) {
@@ -59,7 +62,36 @@ class StoreLessonRequest extends FormRequest
                     }
                 }
             }
+            if ($start && $end) {
+                try {
+                    $startTime = Carbon::parse($start);
+                    $endTime = Carbon::parse($end);
+                    if ($endTime->diffInMinutes($startTime) > 180) {
+                        $validator->errors()->add('end_datetime', 'The duration of the session should not exceed 3 hours.');
+                    }
+                } catch (\Exception $e) {
+                    // تجاهل لأن القاعدة الأساسية ستتحقق من التنسيق
+                }
+            }
+            // ✅ تحقق من أن المعلم مرتبط بالمادة
+            $teacher = auth()->user();
+            if ($subjectId && $teacher) {
+                if (!$teacher->subjects()->where('subjects.id', $subjectId)->exists()) {
+                    $validator->errors()->add('subject_id', 'Teacher is not assigned to this subject.');
+                }
+            }
+            if ($subjectId && $educationStageId && $teacher) {
+                $hasSubjectAndStage = TeacherSubject::where('teacher_id', $teacher->id)
+                    ->where('subject_id', $subjectId)
+                    ->where('education_stage_id', $educationStageId)
+                    ->exists();
+
+                if (!$hasSubjectAndStage) {
+                    $validator->errors()->add('education_stage_id', 'This subject is not assigned to the teacher in this education stage.');
+                }
+            }
         });
+
     }
 
 

@@ -7,3 +7,10 @@ if (!function_exists('get_language')) {
         ];
     }
 }
+
+if (!function_exists('setting')) {
+    function setting($key, $default = null)
+    {
+        return config($key, $default);
+    }
+}

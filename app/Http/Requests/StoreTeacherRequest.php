@@ -28,6 +28,7 @@ class StoreTeacherRequest extends FormRequest
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email|max:255',
             'password' => ['required', Password::min(8)->mixedCase()->numbers()->symbols()],
+            'iban' => 'required|string',
         ];
     }
 }

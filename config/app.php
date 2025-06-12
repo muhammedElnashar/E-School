@@ -41,7 +41,7 @@ return [
     |
     */
 
-    'debug' => (bool) env('APP_DEBUG', false),
+    'debug' => (bool)env('APP_DEBUG', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -177,7 +177,7 @@ return [
          */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
-         App\Providers\BroadcastServiceProvider::class,
+        App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
     ],
@@ -197,7 +197,7 @@ return [
         // ...
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'Image' => \Intervention\Image\Facades\Image::class,
-        'PDF'       => Barryvdh\DomPDF\Facade::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
         'Paystack' => Unicodeveloper\Paystack\Facades\Paystack::class,
     ])->toArray(),
 

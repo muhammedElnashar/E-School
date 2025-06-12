@@ -16,8 +16,10 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('teacher_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('admin_id')->constrained('users')->onDelete('cascade');
             $table->decimal('amount', 8, 2);
-            $table->string('status')->default('pending'); // approved, cancelled
+            $table->string('status')->default('pending');
+            $table->timestamp('paid_at');
             $table->timestamps();
         });
     }

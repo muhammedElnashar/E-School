@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Setting;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -40,5 +43,14 @@ class AppServiceProvider extends ServiceProvider
         //
         Schema::defaultStringLength(191);
         Paginator::useBootstrap();
+        if (Schema::hasTable('settings')) {
+            try {
+                foreach (Setting::pluck('value', 'key') as $key => $value) {
+                    Config::set($key, $value);
+                }
+            } catch (\Exception $e) {
+                Log::error('Failed loading settings: ' . $e->getMessage());
+            }
+        }
     }
 }

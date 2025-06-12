@@ -1,5 +1,5 @@
 <?php
-
+/*
 use Illuminate\Support\Facades\File;
 
 return [
@@ -79,4 +79,4 @@ return [
             'password' => 'superadmin'
         ]
     ]
-];
+];*/

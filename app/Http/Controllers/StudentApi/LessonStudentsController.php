@@ -31,6 +31,7 @@ class LessonStudentsController extends Controller
             'data' => LessonOccurrenceResource::collection($futureLessonOccurrences),
         ]);
     }
+
     public function assign(AssignAndCancelLessonRequest $request)
     {
 
@@ -43,7 +44,7 @@ class LessonStudentsController extends Controller
 
         $lesson = $lessonOccurrence->lesson;
         $sub_id = $lesson->subject->id;
-        $edu_id = $lesson->educationStage->id?? null;
+        $edu_id = $lesson->educationStage->id ?? null;
 
         $purchased = $user->purchases()
             ->whereHas('marketplaceItem', function ($q) use ($sub_id, $edu_id) {
@@ -102,6 +103,7 @@ class LessonStudentsController extends Controller
 
         return response()->json(['message' => 'Lesson booked successfully.']);
     }
+
     public function cancel($id)
     {
         $user = auth()->user();
@@ -138,5 +140,28 @@ class LessonStudentsController extends Controller
 
         return response()->json(['message' => 'Lesson cancelled successfully.']);
     }
+
+    public function myUpcomingLessons()
+    {
+        $now = now();
+
+        $upcomingLessons = LessonStudent::where('student_id', auth()->id())
+            ->join('lesson_occurrences', 'lesson_students.lesson_occurrence_id', '=', 'lesson_occurrences.id')
+            ->join('lessons', 'lesson_occurrences.lesson_id', '=', 'lessons.id')
+            ->whereRaw("
+            TIMESTAMP(lesson_occurrences.occurrence_date, TIME(lessons.start_datetime)) > ?
+        ", [$now])
+            ->orderByRaw("
+            TIMESTAMP(lesson_occurrences.occurrence_date, TIME(lessons.start_datetime))
+        ")
+            ->with(['Occurrence.lesson'])
+            ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $upcomingLessons,
+        ]);
+    }
+
 
 }

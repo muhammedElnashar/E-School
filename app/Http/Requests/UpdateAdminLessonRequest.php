@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Enums\Scopes;
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Role;
@@ -37,5 +38,21 @@ class UpdateAdminLessonRequest extends FormRequest
             'recurrence.exception_weeks' => ['nullable', 'array'],
             'recurrence.exception_weeks.*' => ['integer', 'min:1'],
         ];
+    }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            try {
+                $start = Carbon::parse($this->start_datetime);
+                $end = Carbon::parse($this->end_datetime);
+
+                if ($end->diffInMinutes($start) > 180) {
+                    $validator->errors()->add('end_datetime', 'The duration of the session should not exceed 3 hours.');
+                }
+            } catch (\Exception $e) {
+                // تجاهل الخطأ، سيتم التحقق من التنسيق الأساسي في rules()
+            }
+        });
     }
 }

@@ -60,6 +60,8 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::delete("destroy-assignment/{id}", [App\Http\Controllers\Admin\AssignmentsController::class, 'destroyAssignment'])->name('assignment.destroy');
     Route::delete("destroy-submission/{id}", [App\Http\Controllers\Admin\AssignmentsController::class, 'destroySubmission'])->name('submission.destroy');
     Route::resource('settings', SettingController::class);
+    Route::post('/admin/settings/update-env', [SettingController::class, 'updateEnvFromSettings'])->name('settings.updateEnv');
+
     //ADMIN Chat
     Route::get('chat', [ChatController::class, 'index'])->name('admin.chat.index');
     Route::get('chat/search', [ChatController::class, 'search'])->name('admin.chat.search');

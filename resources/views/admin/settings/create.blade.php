@@ -27,7 +27,13 @@
                                 <textarea
                                     name="value" class="form-control">{{ old('value') }}</textarea>
                             </div>
-
+                            <div class="form-group">
+                                <label for="add_to_env">Active</label>
+                                <select name="add_to_env" id="add_to_env" class="form-control">
+                                    <option value="1">Yes</option>
+                                    <option value="0">No</option>
+                                </select>
+                            </div>
 
                             <button class="btn btn-theme btn-block" type="submit">{{ __('Submit') }}</button>
                         </form>

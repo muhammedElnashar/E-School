@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('key')->unique();
             $table->text('value')->nullable();
+            $table->boolean('add_to_env')->default(false);
             $table->timestamps();
         });
     }

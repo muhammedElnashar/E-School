@@ -9,6 +9,7 @@
         <div class="page-header d-flex justify-content-between align-items-center">
             <h3 class="page-title">{{ __('Manage Settings') }}</h3>
             <a href="{{ route('settings.create') }}" class="btn btn-primary">{{ __('Create Settings') }}</a>
+
         </div>
 
         <div class="card shadow-sm">
@@ -21,6 +22,7 @@
                             <th>#</th>
                             <th>{{ __('Key') }}</th>
                             <th>{{ __('Value') }}</th>
+                            <th>{{ __('Active') }}</th>
                             <th>{{ __('Action') }}</th>
                         </tr>
                         </thead>
@@ -30,6 +32,7 @@
                                 <td>{{ $item->id }}</td>
                                 <td>{{ $item->key }}</td>
                                 <td>{{ $item->value }}</td>
+                                <td>{{ $item->add_to_env }}</td>
                                 <td>
                                     <button type="button" class="btn btn-sm btn-warning" data-toggle="modal"
                                             data-target="#editModal-{{ $item->id }}">
@@ -76,6 +79,13 @@
                                                     </textarea>
                                                 </div>
 
+                                                <div class="form-group">
+                                                    <label for="add_to_env">Active</label>
+                                                    <select name="add_to_env" id="add_to_env" class="form-control">
+                                                        <option value="0" {{ $item->add_to_env ? '' : 'selected' }}>No</option>
+                                                        <option value="1" {{ $item->add_to_env ? 'selected' : '' }}>Yes</option>
+                                                    </select>
+                                                </div>
 
 
 
@@ -103,7 +113,10 @@
                 </div>
             </div>
         </div>
+
+
     </div>
+
 @endsection
 
 @section('script')

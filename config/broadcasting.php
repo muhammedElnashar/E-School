@@ -32,12 +32,12 @@ return [
 
         'pusher' => [
             'driver' => 'pusher',
-            'key' => env('PUSHER_APP_KEY'),
-            'secret' => env('PUSHER_APP_SECRET'),
-            'app_id' => env('PUSHER_APP_ID'),
+            'key' => config('broadcasting.connections.pusher.key'),
+            'secret' => config('broadcasting.connections.pusher.secret'),
+            'app_id' => config('broadcasting.connections.pusher.app_id'),
             'options' => [
-                'cluster' => env('PUSHER_APP_CLUSTER'),
-                'useTLS' => true,
+                'cluster' => config('broadcasting.connections.pusher.options.cluster'),
+                'useTLS' => filter_var(config('broadcasting.connections.pusher.options.useTLS', true), FILTER_VALIDATE_BOOLEAN),
             ],
             'client_options' => [
                 // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html

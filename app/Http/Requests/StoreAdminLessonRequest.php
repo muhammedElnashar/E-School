@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Enums\Scopes;
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -39,4 +40,29 @@ class StoreAdminLessonRequest extends FormRequest
             'recurrence.exception_weeks.*' => ['integer', 'min:1', 'max:' . $weeksCount],
         ];
     }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $startRaw = $this->start_datetime;
+            $endRaw = $this->end_datetime;
+
+            if (!$startRaw || !$endRaw) {
+                return;
+            }
+
+            try {
+                $start = \Carbon\Carbon::createFromFormat('Y-m-d\TH:i', $startRaw);
+                $end = \Carbon\Carbon::createFromFormat('Y-m-d\TH:i', $endRaw);
+
+                if ($end->diffInMinutes($start) > 180) {
+                    $validator->errors()->add('end_datetime', 'The duration of the session should not exceed 3 hours');
+                }
+            } catch (\Exception $e) {
+                // Ignore parsing error, the main validation rules will catch this
+            }
+        });
+    }
+
+
 }

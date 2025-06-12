@@ -65,6 +65,8 @@ Route::group(['prefix' => 'student'], function () {
         Route::get('/subjects', [MarketplaceItemController::class, 'getAllSubject']);
         //Student List
         Route::get('/lessons/list',[\App\Http\Controllers\StudentApi\LessonStudentsController::class,'list']);
+        Route::get('/my-upcoming-lessons', [\App\Http\Controllers\StudentApi\LessonStudentsController::class, 'myUpcomingLessons']);
+
         Route::post('/assign/lesson',[\App\Http\Controllers\StudentApi\LessonStudentsController::class,'assign']);
         Route::delete('/cancel/lesson/{id}',[\App\Http\Controllers\StudentApi\LessonStudentsController::class,'cancel']);
         Route::get('/all-assignments', [SubmissionController::class, 'getAllAssignments']);
@@ -92,6 +94,8 @@ Route::group(['prefix' => 'teacher'], function () {
         Route::post('teacher/logout', [AuthController::class, 'TeacherLogout']);
         // User
         Route::patch('update/teacher/profile', [UserController::class, 'updateTeacherProfile']);
+        // User Info
+        Route::get('user/info/{id}', [UserController::class, 'getUserInfo']);
         //Lessons
         Route::get('/lesson', [LessonController::class, 'index']);
         Route::post('/lesson', [LessonController::class, 'store']);

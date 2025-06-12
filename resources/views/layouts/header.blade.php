@@ -9,8 +9,16 @@
         <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize"><span
                 class="fa fa-bars"></span></button>
         <ul class="navbar-nav navbar-nav-left">
-            <li class="nav-item"><a class="nav-link" href="#" aria-expanded="false"> <span
-                        class="badge badge-success">v</span> </a></li>
+            <li class="nav-item">
+                <form id="updateEnvForm" action="{{ route('settings.updateEnv') }}" method="POST" style="display: none;">
+                    @csrf
+                </form>
+
+                <button type="button" class="btn btn-success" id="updateEnvBtn">
+                    Update Env File
+                </button>
+
+            </li>
         </ul>
         <ul class="navbar-nav navbar-nav-right">
             <a class="nav-link" href="{{url('clear')}}"> <input
@@ -61,4 +69,23 @@
         <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button"
                 data-toggle="offcanvas"><span class="fa fa-bars"></span></button>
     </div>
+    <script>
+        document.getElementById('updateEnvBtn').addEventListener('click', function () {
+            Swal.fire({
+                title: 'Are You Sure?',
+                text: "Env Update With Current Value!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes Update Env!',
+                cancelButtonText: 'No'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('updateEnvForm').submit();
+                }
+            });
+        });
+    </script>
+
 </nav>

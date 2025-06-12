@@ -25,6 +25,7 @@ class AuthController extends Controller
 {
     public function studentRegister(RegisterRequest $request)
     {
+
         try {
             $data =$request->all();
             $data['password'] = Hash::make($request->password);
