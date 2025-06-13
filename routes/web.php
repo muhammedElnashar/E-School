@@ -43,11 +43,15 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::resource('marketplace-items/package', PackageController::class);
     Route::get('/subjects/{subject}/related-stages', [SubjectController::class, 'getRelatedStages']);
     Route::resource('marketplace-items/digital-assets', DigitalAssetController::class);
+    //Purchases Routes
     Route::resource('purchases',PurchasesController::class);
+    Route::get('/payments', [PurchasesController::class, 'payments'])->name('purchases.payments');
+    Route::get('/purchases/assets/create', [PurchasesController::class, 'assetsCreate'])->name('purchases.assets.create');
+    Route::post('/purchases/assets/store', [PurchasesController::class, 'assetsStore'])->name('purchases.assets.store');
+    //Lesson Routes
     Route::resource('lessons',\App\Http\Controllers\Admin\LessonController::class);
     Route::get('/lessons/{lesson}/occurrences', [\App\Http\Controllers\Admin\LessonController::class, 'occurrenceLesson'])->name('lessons.occurrences');
     Route::get('/teachers/{teacher}/subjects', [\App\Http\Controllers\Admin\LessonController::class, 'getSubjects']);
-
     //Teacher Subject Routes
     Route::get('/teachers-subjects/{teacher}', [\App\Http\Controllers\Admin\TeacherSubjectController::class, 'index'])->name('teacher.subject.index');
     Route::get('/teachers-subjects/create/{teacher_id}', [\App\Http\Controllers\Admin\TeacherSubjectController::class, 'create'])->name('teacher.subject.create');

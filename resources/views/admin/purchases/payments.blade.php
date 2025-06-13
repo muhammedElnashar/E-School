@@ -7,17 +7,14 @@
 @section('content')
     <div class="content-wrapper">
         <div class="page-header d-flex justify-content-between align-items-center">
-            <h3 class="page-title">{{ __('Purchases') }}</h3>
-            <div>
-                <a href="{{ route('purchases.create') }}" class="btn btn-primary">{{ __('Manual Purchases Packages') }}</a>
-                <a href="{{ route('purchases.assets.create') }}" class="btn btn-primary">{{ __('Manual Purchases Assets') }}</a>
-            </div>
+            <h3 class="page-title">{{ __('Payments') }}</h3>
+
 
         </div>
 
         <div class="card shadow-sm">
             <div class="card-body">
-                    <h4 class="card-title">{{ __('Manual Purchase List') }}</h4>
+                <h4 class="card-title">{{ __(' Payment List') }}</h4>
                 <div class="table-responsive">
                     <table class="table table-bordered table-striped text-center">
                         <thead>
@@ -29,6 +26,8 @@
                             <th>{{ __(' price') }}</th>
                             <th>{{ __('Remaining Credits') }}</th>
                             <th>{{ __('File ') }}</th>
+                            <th>{{ __('Active At ') }}</th>
+
                             <th>{{ __('Action') }}</th>
                         </tr>
                         </thead>
@@ -42,18 +41,14 @@
                                 <td>{{ $item->price }}</td>
                                 <td>@if( $item->remaining_credits ){{ $item->remaining_credits }} @endif</td>
                                 <td>@if( $item->marketplaceItem->file_path ) <a target="_blank" href="{{asset('files/'.$item->marketplaceItem->file_path )}}">File</a> @endif</td>
+                                <td>{{$item->activated_at->format('Y-m-d')}}</td>
                                 <td>
-                                  @if($item->marketplaceItem->type->value == \App\Enums\MarketplaceItemType::Package->value)
+                                    @if($item->marketplaceItem->type->value == \App\Enums\MarketplaceItemType::Package->value)
                                         <button type="button" class="btn btn-sm btn-warning" data-toggle="modal"
                                                 data-target="#editModal-{{ $item->id }}">
                                             {{ __('Edit') }}
                                         </button>
-                                  @endif
-                                    <form action="{{ route('purchases.destroy', $item->id) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger deleted-btn">{{ __('Delete') }}</button>
-                                    </form>
+                                    @endif
                                 </td>
                             </tr>
                             <div class="modal fade" id="editModal-{{ $item->id }}" tabindex="-1" role="dialog"
@@ -110,28 +105,3 @@
     </div>
 @endsection
 
-@section('script')
-    <script>
-
-        document.addEventListener("DOMContentLoaded", function () {
-            document.querySelectorAll('.deleted-btn').forEach(function (btn) {
-                btn.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const form = this.closest('form');
-                    Swal.fire({
-                        title: '{{ __("Delete Confirmation") }}',
-                        text: '{{ __("Are you sure you want to delete this Record?") }}',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonText: '{{ __("Yes, delete it!") }}',
-                        cancelButtonText: '{{ __("Cancel") }}',
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            form.submit();
-                        }
-                    });
-                });
-            });
-        });
-    </script>
-@endsection

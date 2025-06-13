@@ -20,8 +20,11 @@ class Purchase extends Model
     protected $casts = [
         'remaining_credits' => 'integer',
         'price' => 'float',
+        'activated_at' => 'datetime',
+
         'status' => PaymentStatusEnum::class // You can use an enum if you have one for status
     ];
+
 
     public function user()
     {

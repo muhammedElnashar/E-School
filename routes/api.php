@@ -4,6 +4,7 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\StudentApi\EmailVerify;
 use App\Http\Controllers\StudentApi\MarketplaceItemController;
 use App\Http\Controllers\StudentApi\ResetPassword;
+use App\Http\Controllers\StudentApi\StripeWebhookController;
 use App\Http\Controllers\StudentApi\SubmissionController;
 use App\Http\Controllers\TeacherApi\AuthController;
 use App\Http\Controllers\TeacherApi\LessonController;
@@ -20,14 +21,14 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
+Route::get('settings',[\App\Http\Controllers\GlobalController::class,'settings']);
+Route::get('guest',[\App\Http\Controllers\GlobalController::class,'guestMode']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/chat/send', [ChatController::class, 'sendMessage']);
     Route::get('/chat/conversations', [ChatController::class, 'getConversations']);
     Route::get('/chat/messages/{conversationId}', [ChatController::class, 'getMessages']);
     Route::post('/chat/search', [ChatController::class, 'searchUser']);
     Route::delete('/chat/delete/{id}', [ChatController::class, 'destroyChat']);
-
     Route::get('lesson/{lesson}/join', [LessonController::class, 'joinLesson']);
 
 });
@@ -36,6 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
  * STUDENT APIs
  **/
 Route::group(['prefix' => 'student'], function () {
+    Route::post('/webhook/stripe', [StripeWebhookController::class, 'handleWebhook']);
 
     // Auth
     Route::middleware('guest')->group(function () {
@@ -75,6 +77,8 @@ Route::group(['prefix' => 'student'], function () {
         Route::delete('/submission/destroy/{id}', [SubmissionController::class, 'destroy']);
 
         Route::get("announcements",[\App\Http\Controllers\StudentApi\Announcement::class, 'index']);
+        Route::post('/student/payment', [\App\Http\Controllers\StudentApi\PaymentController::class, 'createPaymentIntent']);
+
 
     });
 

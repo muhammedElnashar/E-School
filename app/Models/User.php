@@ -79,5 +79,13 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->conversationsAsUserOne->merge($this->conversationsAsUserTwo);
     }
 
+    public function transactionsAsTeacher()
+    {
+        return $this->hasMany(Transaction::class, 'teacher_id');
+    }
 
+    public function transactionsAsAdmin()
+    {
+        return $this->hasMany(Transaction::class, 'admin_id');
+    }
 }

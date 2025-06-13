@@ -20,6 +20,10 @@ class AssetsResource extends JsonResource
             'description' => $this->description,
             'type' => $this->type,
             'price' => $this->price,
+            'file_path' => $this->hasPurchased(auth()->id())
+                ? asset('files/'.$this->file_path)
+                : null,
+
             'subject' => $this->whenLoaded('subject', function () {
                 return $this->subject ? [
                     'id' => $this->subject->id,

@@ -38,6 +38,16 @@ class MarketplaceItem extends Model
     {
         return $this->hasMany(Purchase::class);
     }
+    public function hasPurchased($userId)
+    {
+        return $this->purchases()
+            ->where('user_id', $userId)
+            ->whereHas('marketplaceItem', function ($query) {
+                $query->where('type', MarketplaceItemType::DigitalAsset->value);
+            })
+            ->exists();
+    }
+
     protected $casts = [
         'type' => MarketplaceItemType::class,
         'package_scope' => Scopes::class,
