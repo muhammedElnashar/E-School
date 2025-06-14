@@ -39,6 +39,8 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::resource('education/stages', EducationStageController::class);
     Route::resource('teacher', \App\Http\Controllers\Admin\TeacherController::class);
     Route::resource('admin', \App\Http\Controllers\Admin\AdminController::class);
+    Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
+
     Route::resource('announcements', \App\Http\Controllers\Admin\AnnouncementController::class);
     Route::resource('marketplace-items/package', PackageController::class);
     Route::get('/subjects/{subject}/related-stages', [SubjectController::class, 'getRelatedStages']);
@@ -76,7 +78,8 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('conversations', [MangeConversation::class, 'conversations'])->name('admin.chat.conversations');
     Route::get('conversations/{id}', [MangeConversation::class, 'showConversation'])->name('admin.chat.showConversation');
     Route::delete('conversations/{id}', [MangeConversation::class, 'deleteMessage'])->name('admin.message.delete');
-
+    Route::post('transaction/pay', [\App\Http\Controllers\Admin\TransactionController::class, 'pay'])->name('admin.transaction.pay');
+    Route::get('transaction/teacher-transactions', [\App\Http\Controllers\Admin\TransactionController::class, 'teacherTransactions'])->name('admin.transaction.teacher-transactions');
 });
 
 Route::get('set-language/{locale}', function ($locale) {

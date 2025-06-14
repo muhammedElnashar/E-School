@@ -21,6 +21,13 @@ class LessonOccurrence extends Model
     }
     public function students()
     {
-        return $this->belongsToMany(User::class, 'lesson_students', 'lesson_occurrence_id', 'student_id');
+        return $this->belongsToMany(User::class, 'lesson_students', 'lesson_occurrence_id', 'student_id')
+            ->withPivot(['purchase_id']);
     }
+    public function lessonStudents()
+    {
+        return $this->hasMany(LessonStudent::class);
+    }
+
+
 }

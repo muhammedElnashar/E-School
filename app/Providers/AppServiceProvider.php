@@ -17,22 +17,12 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register() {
-//        $this->renderable(function (NotFoundHttpException $e, $request) {
-//            if ($request->is('api/*')) {
-//                return response()->json([
-//                    'message' => 'Record not found.'
-//                ], 404);
-//            }
-//        });
-//        $this->renderable(function (\Illuminate\Auth\AuthenticationException $e, $request) {
-//            if ($request->is('api/*')) {
-//                return response()->json([
-//                    'message' => 'Not authenticated'
-//                ], 401);
-//            }
-//        });
+
+
+    public function register()
+    {
     }
+
 
     /**
      * Bootstrap any application services.
@@ -41,16 +31,30 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot() {
         //
-        Schema::defaultStringLength(191);
-        Paginator::useBootstrap();
         if (Schema::hasTable('settings')) {
             try {
-                foreach (Setting::pluck('value', 'key') as $key => $value) {
-                    Config::set($key, $value);
+                $settings = Setting::where('add_to_env', true)->get();
+
+                foreach ($settings as $setting) {
+                    Config::set($setting->key, $setting->value);
                 }
+
+                // ✅ حماية إضافية: إذا إعدادات Pusher ناقصة، غيّر قناة البث إلى log
+                if (
+                    empty(config('broadcasting.connections.pusher.key')) ||
+                    empty(config('broadcasting.connections.pusher.secret')) ||
+                    empty(config('broadcasting.connections.pusher.app_id'))
+                ) {
+                    config()->set('broadcasting.default', 'log');
+                }
+
             } catch (\Exception $e) {
-                Log::error('Failed loading settings: ' . $e->getMessage());
+                Log::error('فشل تحميل الإعدادات من قاعدة البيانات: ' . $e->getMessage());
             }
         }
+
+
+        Schema::defaultStringLength(191);
+        Paginator::useBootstrap();
     }
 }

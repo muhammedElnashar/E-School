@@ -43,15 +43,41 @@ class UpdateAdminLessonRequest extends FormRequest
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            try {
-                $start = Carbon::parse($this->start_datetime);
-                $end = Carbon::parse($this->end_datetime);
+            $startRaw = $this->start_datetime;
+            $endRaw = $this->end_datetime;
+            $teacherId = $this->input('teacher_id');
 
+            if (!$startRaw || !$endRaw || !$teacherId) {
+                return;
+            }
+
+            try {
+                $start = Carbon::createFromFormat('Y-m-d\TH:i', $startRaw);
+                $end = Carbon::createFromFormat('Y-m-d\TH:i', $endRaw);
+
+                // ✅ تحقق من مدة الجلسة
                 if ($end->diffInMinutes($start) > 180) {
                     $validator->errors()->add('end_datetime', 'The duration of the session should not exceed 3 hours.');
                 }
+
+                // ✅ حساب بداية ونهاية الأسبوع للحصة الجديدة
+                $weekStart = $start->copy()->startOfWeek();
+                $weekEnd = $start->copy()->endOfWeek();
+
+                // ✅ استثناء الحصة الحالية من العد باستخدام ID من الراوت
+                $lessonId = $this->route('lesson'); // تأكد أن route name فيه 'lesson'
+                $countLessons = \App\Models\Lesson::where('teacher_id', $teacherId)
+                    ->whereBetween('start_datetime', [$weekStart, $weekEnd])
+                    ->when($lessonId, function ($query) use ($lessonId) {
+                        $query->where('id', '!=', $lessonId);
+                    })
+                    ->count();
+
+                if ($countLessons >= 7) {
+                    $validator->errors()->add('teacher_id', 'A teacher cannot create more than 7 classes per week.');
+                }
             } catch (\Exception $e) {
-                // تجاهل الخطأ، سيتم التحقق من التنسيق الأساسي في rules()
+                // تجاهل، سيتم التحقق من التنسيق من rules
             }
         });
     }

@@ -19,8 +19,8 @@ class LessonResource extends JsonResource
             'teacher' => $this->teacher->name,
             'subject' => $this->subject->name,
             'education_stage' => $this->educationStage->name?? null,
-            'start_datetime' => $this->start_datetime,
-            'end_datetime' => $this->end_datetime,
+            'start_time' => $this->start_datetime->format('H:i'),
+            'end_time' => $this->end_datetime->format('H:i'),
             'lesson_type' => $this->lesson_type,
         ];
     }

@@ -84,6 +84,9 @@
                     <li class="nav-item">
                             <a class="nav-link" href="{{route("admin.index")}}"> {{ __(' Admin List') }} </a>
                         </li>
+                    <li class="nav-item">
+                            <a class="nav-link" href="{{route("users.index")}}"> {{ __(' Student List') }} </a>
+                        </li>
 
                 </ul>
             </div>
@@ -97,7 +100,13 @@
             <div class="collapse" id="payment-menu">
                 <ul class="nav flex-column sub-menu">
                         <li class="nav-item">
-                            <a class="nav-link" href="{{route("purchases.index")}}"> {{ __(' Purchases List') }} </a>
+                            <a class="nav-link" href="{{route("purchases.index")}}"> {{ __('Manual Purchases List') }} </a>
+                        </li>
+                    <li class="nav-item">
+                            <a class="nav-link" href="{{route("purchases.payments")}}"> {{ __('Online Payment List') }} </a>
+                        </li>
+                    <li class="nav-item">
+                            <a class="nav-link" href="{{route("admin.transaction.teacher-transactions")}}"> {{ __('Teacher Transactions List') }} </a>
                         </li>
                 </ul>
             </div>

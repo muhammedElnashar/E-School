@@ -30,11 +30,15 @@ class User extends Authenticatable implements MustVerifyEmail
         'role' => RoleEnum::class,
     ];
 
-    public function lessons()
+    public function occurrences()
     {
-        return $this->belongsToMany(Lesson::class, 'lesson_student');
+        return $this->belongsToMany(LessonOccurrence::class, 'lesson_students','student_id');
     }
 
+    public function lessons()
+    {
+        return $this->hasMany(Lesson::class, 'teacher_id');
+    }
     public function transactions()
     {
         return $this->hasMany(Transaction::class);

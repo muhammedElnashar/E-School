@@ -7,6 +7,7 @@ use App\Helpers\ErrorHandler;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AssignAndCancelLessonRequest;
 use App\Http\Resources\LessonOccurrenceResource;
+use App\Http\Resources\UpcomingLessonResource;
 use App\Models\Lesson;
 use App\Models\LessonOccurrence;
 use App\Models\LessonStudent;
@@ -45,6 +46,13 @@ class LessonStudentsController extends Controller
         $lesson = $lessonOccurrence->lesson;
         $sub_id = $lesson->subject->id;
         $edu_id = $lesson->educationStage->id ?? null;
+        if ($lessonOccurrence->occurrence_date < now()->toDateString() ||
+            ($lessonOccurrence->occurrence_date == now()->toDateString() && $lesson->start_datetime < now()->toTimeString())) {
+            return response()->json([
+                "status" => "error",
+                "message" => "This lesson has already started or ended and cannot be booked."
+            ], 403);
+        }
 
         $purchased = $user->purchases()
             ->whereHas('marketplaceItem', function ($q) use ($sub_id, $edu_id) {
@@ -154,12 +162,12 @@ class LessonStudentsController extends Controller
             ->orderByRaw("
             TIMESTAMP(lesson_occurrences.occurrence_date, TIME(lessons.start_datetime))
         ")
-            ->with(['Occurrence.lesson'])
+            ->with(['lessonOccurrence.lesson'])
             ->get();
 
         return response()->json([
             'status' => 'success',
-            'data' => $upcomingLessons,
+            'data' => UpcomingLessonResource::collection($upcomingLessons),
         ]);
     }
 

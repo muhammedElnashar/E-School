@@ -16,9 +16,10 @@ class Lesson extends Model
         'start_datetime', 'end_datetime', 'lesson_type',
         'agora_channel_name',
     ];
+    protected $dates = ['start_datetime', 'end_datetime'];
+
     protected $casts = [
         'lesson_type' => LessonType::class,
-
 
     ];
     public function teacher()
@@ -35,6 +36,7 @@ class Lesson extends Model
     {
         return $this->hasOne(LessonRecurrence::class);
     }
+
 
     public function occurrences()
     {

@@ -16,8 +16,7 @@ class LessonOccurrenceResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'occurrence_date' => $this->occurrence_date,
-            'lesson_id' => $this->lesson_id,
+            'occurrence_date' => $this->occurrence_date->format('Y-m-d'),
             'lesson' => new LessonResource($this->whenLoaded('lesson')),
         ];
     }

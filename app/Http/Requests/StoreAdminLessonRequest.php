@@ -46,8 +46,9 @@ class StoreAdminLessonRequest extends FormRequest
         $validator->after(function ($validator) {
             $startRaw = $this->start_datetime;
             $endRaw = $this->end_datetime;
+            $teacherId = $this->input('teacher_id');
 
-            if (!$startRaw || !$endRaw) {
+            if (!$startRaw || !$endRaw || !$teacherId) {
                 return;
             }
 
@@ -55,11 +56,26 @@ class StoreAdminLessonRequest extends FormRequest
                 $start = \Carbon\Carbon::createFromFormat('Y-m-d\TH:i', $startRaw);
                 $end = \Carbon\Carbon::createFromFormat('Y-m-d\TH:i', $endRaw);
 
+                // ✅ تحقق من مدة الجلسة
                 if ($end->diffInMinutes($start) > 180) {
-                    $validator->errors()->add('end_datetime', 'The duration of the session should not exceed 3 hours');
+                    $validator->errors()->add('end_datetime', 'The duration of the session should not exceed 3 hours.');
+                }
+
+                // ✅ حساب بداية ونهاية الأسبوع الحالي من تاريخ الحصة
+                $weekStart = $start->copy()->startOfWeek();
+                $weekEnd = $start->copy()->endOfWeek();
+
+                // ✅ جلب عدد الحصص التي يملكها المدرس في نفس الأسبوع
+                $countLessons = \App\Models\Lesson::where('teacher_id', $teacherId)
+                    ->whereBetween('start_datetime', [$weekStart, $weekEnd])
+                    ->count();
+
+                // ✅ تحقق من الحد الأعلى
+                if ($countLessons >= 7) {
+                    $validator->errors()->add('teacher_id', 'A teacher cannot create more than 7 classes per week.');
                 }
             } catch (\Exception $e) {
-                // Ignore parsing error, the main validation rules will catch this
+                // تجاهل الخطأ في التنسيق
             }
         });
     }

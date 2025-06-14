@@ -62,24 +62,53 @@ class StoreLessonRequest extends FormRequest
                     }
                 }
             }
+
             if ($start && $end) {
                 try {
                     $startTime = Carbon::parse($start);
                     $endTime = Carbon::parse($end);
+
                     if ($endTime->diffInMinutes($startTime) > 180) {
                         $validator->errors()->add('end_datetime', 'The duration of the session should not exceed 3 hours.');
                     }
+
+                    // حساب بداية ونهاية الأسبوع
+                    $weekStart = $startTime->copy()->startOfWeek(); // بداية الأسبوع (الاثنين)
+                    $weekEnd = $startTime->copy()->endOfWeek(); // نهاية الأسبوع (الأحد)
+
+                    // جلب المستخدم الحالي كمدرس
+                    $teacher = auth()->user();
+
+                    if ($teacher) {
+                        $countLessons = \App\Models\Lesson::where('teacher_id', $teacher->id)
+                            ->whereBetween('start_datetime', [$weekStart, $weekEnd])
+                            ->count();
+
+                        // إذا تعديل حصة موجودة، استثني الحصة نفسها
+                        if ($this->route('lesson')) {
+                            $countLessons = \App\Models\Lesson::where('teacher_id', $teacher->id)
+                                ->whereBetween('start_datetime', [$weekStart, $weekEnd])
+                                ->where('id', '!=', $this->route('lesson'))
+                                ->count();
+                        }
+
+                        if ($countLessons >= 7) {
+                            $validator->errors()->add('teacher_id', 'A teacher cannot create more than 7 classes per week.');
+                        }
+                    }
                 } catch (\Exception $e) {
-                    // تجاهل لأن القاعدة الأساسية ستتحقق من التنسيق
+                    // تجاهل الأخطاء هنا - سيتم التحقق من التنسيق الأساسي في rules()
                 }
             }
-            // ✅ تحقق من أن المعلم مرتبط بالمادة
+
+            // تحقق أن المعلم مرتبط بالمادة
             $teacher = auth()->user();
             if ($subjectId && $teacher) {
                 if (!$teacher->subjects()->where('subjects.id', $subjectId)->exists()) {
                     $validator->errors()->add('subject_id', 'Teacher is not assigned to this subject.');
                 }
             }
+
             if ($subjectId && $educationStageId && $teacher) {
                 $hasSubjectAndStage = TeacherSubject::where('teacher_id', $teacher->id)
                     ->where('subject_id', $subjectId)
@@ -91,7 +120,6 @@ class StoreLessonRequest extends FormRequest
                 }
             }
         });
-
     }
 
 
