@@ -30,6 +30,7 @@ Route::get('/', function () {
     return redirect('/admin');
 });
 
+
 Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/subjects/stages-management', [SubjectController::class, 'stagesManagement'])->name('subjects.stages.management');

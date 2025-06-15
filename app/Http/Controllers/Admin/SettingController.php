@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Services\SettingServices;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
 
 class SettingController extends Controller
 {
@@ -75,7 +77,7 @@ class SettingController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Setting  $setting
      */
-    public function update(Request $request, Setting $setting)
+    public function update(Request $request, Setting $setting, SettingServices $settingService)
     {
         $request->validate([
             'key' => 'required|string|max:255|unique:settings,key,' . $setting->id,
@@ -83,9 +85,15 @@ class SettingController extends Controller
             'add_to_env' => 'required|boolean',
         ]);
 
-        $setting->update($request->only(['key', 'value','add_to_env']));
+        // 1. تحديث الإعداد في قاعدة البيانات
+        $setting->update($request->only(['key', 'value', 'add_to_env']));
 
-        return redirect()->route('settings.index')->with('success', 'Setting updated successfully.');
+        // 2. مسح كاش الإعدادات
+        Cache::forget('app_settings');
+
+        // 3. تحميل الإعدادات الجديدة إلى config()
+        $settingService->loadSettingsFromDatabase();
+        return redirect()->route('settings.index')->with('success', 'تم تحديث الإعداد وتفعيله فورًا.');
     }
 
     /**
@@ -102,41 +110,10 @@ class SettingController extends Controller
 
     public function updateEnvFromSettings()
     {
-        $settings = Setting::where('add_to_env', true)->get();
-
-        foreach ($settings as $setting) {
-            $this->updateEnvFile(strtoupper($setting->key), $setting->value);
-        }
-
         Artisan::call('config:clear');
         Artisan::call('cache:clear');
         Artisan::call('config:cache');
-
-        return redirect()->route('settings.index')->with('success', '.env تم تحديثه من الإعدادات المختارة بنجاح.');
-    }
-    protected function updateEnvFile($key, $value)
-    {
-        $envPath = base_path('.env');
-        $keyExists = false;
-
-        if (file_exists($envPath)) {
-            $envContent = file_get_contents($envPath);
-            $lines = explode("\n", $envContent);
-
-            foreach ($lines as &$line) {
-                if (strpos($line, $key . '=') === 0) {
-                    $line = $key . '=' . $value;
-                    $keyExists = true;
-                    break;
-                }
-            }
-
-            if (!$keyExists) {
-                $lines[] = $key . '=' . $value;
-            }
-
-            file_put_contents($envPath, implode("\n", $lines));
-        }
+        return redirect()->back()->with('success', '.env تم تحديثه من الإعدادات المختارة بنجاح.');
     }
 
 }

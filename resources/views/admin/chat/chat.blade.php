@@ -104,7 +104,6 @@
                 });
         });
     </script>
-
     <script>
         window.onload = function () {
             var chatBox = document.getElementById('chat-box');
@@ -119,13 +118,15 @@
 
         const pusher = new Pusher("{{ config('broadcasting.connections.pusher.key') }}", {
             cluster: "{{ config('broadcasting.connections.pusher.options.cluster') }}",
-            authEndpoint: "/broadcasting/auth",
+            authEndpoint: "/broadcasting/auth", // تأكد من وجود هذا
             auth: {
                 headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}' // ضروري جدًا
                 }
             }
         });
+
+
 
         const channel = pusher.subscribe("private-conversation.{{ $conversation->id }}");
         channel.bind("new.message", function(data) {

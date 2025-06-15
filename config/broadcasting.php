@@ -39,6 +39,7 @@ return [
                 'cluster' => config('broadcasting.connections.pusher.options.cluster'),
                 'useTLS' => filter_var(config('broadcasting.connections.pusher.options.useTLS', true), FILTER_VALIDATE_BOOLEAN),
             ],
+
             'client_options' => [
                 // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
             ],

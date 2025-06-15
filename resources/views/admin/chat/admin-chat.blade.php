@@ -8,7 +8,7 @@
         <div class="page-header d-flex justify-content-between align-items-center mb-4">
             <h3 class="page-title mb-0">{{ __('Manage Admin') }}</h3>
             <form method="GET" action="{{ route('admin.chat.search') }}" class="d-flex" style="gap: 10px;">
-                <input type="text" name="user_code" class="form-control" placeholder="Search By user code" required>
+                <input type="text" name="query" class="form-control" placeholder="Search By user code or Name" required>
                 <button type="submit" class="btn btn-primary">Search</button>
             </form>
         </div>
