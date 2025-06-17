@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\StudentResource;
 use App\Http\Resources\TeacherResource;
 use App\Http\Resources\TeacherSubjectResource;
+use App\Http\Resources\TeacherTransactionsResource;
 use App\Models\TeacherSubject;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
@@ -77,5 +78,24 @@ class UserController extends Controller
             'status' => 'success',
             "data"=> new StudentResource($user),
         ]);
+    }
+
+    public function getTeacherTransaction()
+    {
+        try {
+            $user = auth()->user();
+            if ($user->role->value !== RoleEnum::Teacher->value) {
+                return response()->json([
+                    'message' => 'Unauthorized',
+                ], 403);
+            }
+            $transactions = $user->transactions()->get();
+            return response()->json([
+                'message' => 'Transactions retrieved successfully',
+                'data' => TeacherTransactionsResource::collection($transactions),
+            ], 200);
+        } catch (\Throwable $e) {
+            return ErrorHandler::handle($e);
+        }
     }
 }

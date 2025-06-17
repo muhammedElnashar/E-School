@@ -21,8 +21,11 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::get('settings',[\App\Http\Controllers\GlobalController::class,'settings']);
-Route::get('guest',[\App\Http\Controllers\GlobalController::class,'guestMode']);
+Route::middleware('guest')->group(function () {
+    Route::get('settings',[\App\Http\Controllers\GlobalController::class,'settings']);
+    Route::get('guest',[\App\Http\Controllers\GlobalController::class,'guestMode']);
+});
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/chat/send', [ChatController::class, 'sendMessage']);
     Route::get('/chat/conversations', [ChatController::class, 'getConversations']);
@@ -100,6 +103,7 @@ Route::group(['prefix' => 'teacher'], function () {
         Route::patch('update/teacher/profile', [UserController::class, 'updateTeacherProfile']);
         // User Info
         Route::get('user/info/{id}', [UserController::class, 'getUserInfo']);
+        Route::get('teacher/transactions', [UserController::class, 'getTeacherTransaction']);
         //Lessons
         Route::get('/lesson', [LessonController::class, 'index']);
         Route::post('/lesson', [LessonController::class, 'store']);
