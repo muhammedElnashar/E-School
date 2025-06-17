@@ -96,12 +96,13 @@ class ChatController extends Controller
 
     public function searchUser(Request $request)
     {
-        $request->validate([
-            'user_code' => 'required|string'
-        ]);
+        $request->validate(['query' => 'required|string']);
 
-        $user = User::where('user_code', $request->user_code)->first();
+        $query = $request->input('query');
 
+        $user = User::where('user_code', $query)
+            ->orWhere('name', 'LIKE', '%' . $query . '%')
+            ->first();
         if (!$user) {
             return response()->json(['message' => 'User Not Found'], 404);
         }

@@ -19,7 +19,7 @@ class SubjectResource extends JsonResource
         return [
             'id'     => $this->id,
             'name'   => $this->name,
-            'image'  => asset("storage/" . $this->image),
+            'image'  => asset("images/" . $this->image),
             'levels' => $levels->isEmpty() ? "" : $levels,
 
         ];

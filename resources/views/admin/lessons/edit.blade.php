@@ -61,7 +61,7 @@
 
                             <div class="form-group">
                                 <label>{{ __('Lesson Type') }}</label>
-                                <select name="lesson_type" class="form-control">
+                                <select name="lesson_type" class="form-control" required>
                                     <option value="">{{ __('Select Lesson Type') }}</option>
                                     @foreach (\App\Enums\LessonType::cases() as $lessonType)
                                         <option value="{{ $lessonType->value }}" {{ old('lesson_type', $lesson->lesson_type) == $lessonType->value ? 'selected' : '' }}>

@@ -56,7 +56,7 @@
         <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#market-menu" aria-expanded="false"
                aria-controls="market-menu">
-                <i class="fa fa-university menu-icon"></i><span class="menu-title">{{ __('MarketPLace Items') }}</span>
+                <i class="fa fa-university menu-icon"></i><span class="menu-title">{{ __('MarketpLace Items') }}</span>
                 <i class="fa fa-angle-left fa-2xl menu-arrow"></i>
             </a>
             <div class="collapse" id="market-menu">
