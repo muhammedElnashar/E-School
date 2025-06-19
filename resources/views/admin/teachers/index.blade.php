@@ -38,7 +38,7 @@
                                 <td>{{ $item->phone }}</td>
                                 <td>{{ $item->iban }}</td>
                                 <td>@if($item->image)
-                                        <img src="{{asset("storage/". $item->image) }}">
+                                        <img src="{{asset("images/". $item->image) }}">
                                 @endif</td>
                                 <td>
                                     <a href="{{ route('teacher.subject.index', $item->id) }}"

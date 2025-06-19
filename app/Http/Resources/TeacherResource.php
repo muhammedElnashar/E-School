@@ -20,7 +20,7 @@ class TeacherResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'phone' => $this->phone,
-            'image' => asset("images/{$this->image}"),
+            'image' => asset("images/".$this->image),
             'email_verified_at' => $this->email_verified_at,
             'role' => $this->role,
             'iban' => $this->iban,

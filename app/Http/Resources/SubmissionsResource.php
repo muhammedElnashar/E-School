@@ -21,6 +21,7 @@ class SubmissionsResource extends JsonResource
             'student_id' => $this->student_id,
             'text' => $this->text,
             'file_path' =>asset("files/".$this->file_path) ,
+            'grade' => $this->grade,
             'teacher_note'=> $this->teacher_note,
         ];
     }

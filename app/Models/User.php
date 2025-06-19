@@ -29,6 +29,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
         'role' => RoleEnum::class,
     ];
+    public function isSuperAdmin()
+    {
+        return $this->role === RoleEnum::SuperAdmin;
+    }
 
     public function occurrences()
     {

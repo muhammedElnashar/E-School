@@ -29,7 +29,7 @@ class UserController extends Controller
                 if ($user->image) {
                     Storage::disk('public')->delete($user->image);
                 }
-                $user->image = $request->file('image')->store('images/teacher', 'public');
+                $user->image = $request->file('image')->store('users', 'images');
             }
             if ($request->has('phone')) {
                 $user->phone = $request->input('phone');
